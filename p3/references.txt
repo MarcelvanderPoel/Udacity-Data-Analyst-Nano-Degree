@@ -1,0 +1,12 @@
+Reference to used information:
+
+Udacity nanodegree information
+https://docs.python.org/2/index.html
+http://stackoverflow.com/
+http://effbot.org/zone/element-iterparse.htm
+http://www.pyregex.com/
+https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+http://www.openstreetmap.org/
+https://docs.mongodb.com/v3.2/
+http://www.w3schools.com/js/js_json_syntax.asp
+https://www.tutorialspoint.com/index.htm
