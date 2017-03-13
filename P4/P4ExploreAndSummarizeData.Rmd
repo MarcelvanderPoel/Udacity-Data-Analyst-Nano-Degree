@@ -2,7 +2,9 @@
 title: "P4 Explore and Summarize Data"
 author: "M.J. van der Poel"
 date: "5 maart 2017"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 Red Wine Quality
@@ -28,6 +30,7 @@ influence the quality of red wines?
 # want it to. This will clean up the flow of your report.
 
 library(ggplot2)
+library(knitr)
 library(dplyr)
 
 ```
@@ -38,71 +41,92 @@ RW <- read.csv("wineQualityReds.csv")
 ```
 
 Input variables (based on physicochemical tests):
-   1 - fixed acidity (tartaric acid - g / dm^3)
-   2 - volatile acidity (acetic acid - g / dm^3)
-   3 - citric acid (g / dm^3)
-   4 - residual sugar (g / dm^3)
-   5 - chlorides (sodium chloride - g / dm^3
-   6 - free sulfur dioxide (mg / dm^3)
-   7 - total sulfur dioxide (mg / dm^3)
-   8 - density (g / cm^3)
-   9 - pH
-   10 - sulphates (potassium sulphate - g / dm3)
-   11 - alcohol (% by volume)
-   Output variable (based on sensory data): 
-   12 - quality (score between 0 and 10)
+   1 - fixed acidity (tartaric acid - g / dm^3)  
+   2 - volatile acidity (acetic acid - g / dm^3)  
+   3 - citric acid (g / dm^3)  
+   4 - residual sugar (g / dm^3)  
+   5 - chlorides (sodium chloride - g / dm^3  
+   6 - free sulfur dioxide (mg / dm^3)  
+   7 - total sulfur dioxide (mg / dm^3)  
+   8 - density (g / cm^3)  
+   9 - pH  
+   10 - sulphates (potassium sulphate - g / dm3)  
+   11 - alcohol (% by volume)  
+     
+   Output variable (based on sensory data):  
+   12 - quality (score between 0 and 10)  
    
-Description of attributes:
+Description of attributes:  
    1 - fixed acidity: most acids involved with wine or fixed or nonvolatile
-   (do not evaporate readily)
-
+   (do not evaporate readily)  
    2 - volatile acidity: the amount of acetic acid in wine, which at too high 
-   of levels can lead to an unpleasant, vinegar taste
-
+   of levels can lead to an unpleasant, vinegar taste  
    3 - citric acid: found in small quantities, citric acid can add 'freshness' 
-   and flavor to wines
-
+   and flavor to wines  
    4 - residual sugar: the amount of sugar remaining after fermentation stops, 
    it's rare to find wines with less than 1 gram/liter and wines with greater 
-   than 45 grams/liter are considered sweet
-
-   5 - chlorides: the amount of salt in the wine
-
+   than 45 grams/liter are considered sweet  
+   5 - chlorides: the amount of salt in the wine  
    6 - free sulfur dioxide: the free form of SO2 exists in equilibrium between
    molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial
-   growth and the oxidation of wine
-
+   growth and the oxidation of wine  
    7 - total sulfur dioxide: amount of free and bound forms of S02; in low
    concentrations, SO2 is mostly undetectable in wine, but at free SO2 
-   concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
-
+   concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine  
    8 - density: the density of water is close to that of water depending on the
-   percent alcohol and sugar content
-
+   percent alcohol and sugar content  
    9 - pH: describes how acidic or basic a wine is on a scale from 0 
-   (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale
-
+   (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale  
    10 - sulphates: a wine additive which can contribute to sulfur dioxide gas 
-   (S02) levels, wich acts as an antimicrobial and antioxidant
+   (S02) levels, wich acts as an antimicrobial and antioxidant  
+   11 - alcohol: the percent alcohol content of the wine  
 
-   11 - alcohol: the percent alcohol content of the wine
-
-   Output variable (based on sensory data): 
-   12 - quality (score between 0 and 10)
+   Output variable (based on sensory data):  
+   12 - quality (score between 0 and 10)  
 
 
 # Univariate Plots Section
 
-> **Tip**: In this section, you should perform some preliminary exploration of
-your dataset. Run some summaries of the data and create univariate plots to
-understand the structure of the individual variables in your dataset. Don't
-forget to add a comment after each plot or closely-related group of plots!
-There should be multiple code chunks and text sections; the first one below is
-just to help you get started.
 
-```{r echo=FALSE, Univariate_Plots}
+```{r echo=FALSE, Univariate_Plots_1}
+
+str(RW)
+
+summary(RW)
+```
+
+The dataset consists of 12 variables, with 1599 observations.
+
+```{r echo=FALSE, Univariate_Plots_2}
+
+table(RW$quality)
+
+qplot(data=RW, x=fixed.acidity)
+
+qplot(data=RW, x=volatile.acidity)
+
+qplot(data=RW, x=citric.acid)
+
+qplot(data=RW, x=residual.sugar)
+
+qplot(data=RW, x=chlorides)
+
+qplot(data=RW, x=free.sulfur.dioxide)
+
+qplot(data=RW, x=total.sulfur.dioxide)
+
+qplot(data=RW, x=density)
+
+qplot(data=RW, x=pH)
+
+qplot(data=RW, x=sulphates)
+
+qplot(data=RW, x=alcohol)
+
+qplot(data=RW, x=quality)
 
 ```
+
 
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
