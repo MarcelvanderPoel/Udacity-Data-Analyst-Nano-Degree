@@ -95,35 +95,48 @@ str(RW)
 summary(RW)
 ```
 
-The dataset consists of 12 variables, with 1599 observations.
+The dataset consists of 12 variables, with 1599 observations. There are no missing values and the dataset is tidy.
 
-```{r echo=FALSE, Univariate_Plots_2}
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_2}
 
 table(RW$quality)
 
-qplot(data=RW, x=fixed.acidity)
+qplot(data=RW, x=fixed.acidity, binwidth=.2) 
 
-qplot(data=RW, x=volatile.acidity)
+qplot(data=RW, x=volatile.acidity, binwidth=.02, xlim = c(0,1.2))
 
-qplot(data=RW, x=citric.acid)
+qplot(data=RW, x=citric.acid, binwidth=.01, xlim = c(0,0.8))
 
-qplot(data=RW, x=residual.sugar)
+qplot(data=RW, x=residual.sugar, binwidth=.1, xlim = c(0,10))
 
-qplot(data=RW, x=chlorides)
+qplot(data=RW, x=chlorides, binwidth=.005, xlim = c(0,0.2))
 
-qplot(data=RW, x=free.sulfur.dioxide)
+ggplot(data=RW, aes(x=free.sulfur.dioxide)) +
+  geom_histogram(bins=50) 
 
-qplot(data=RW, x=total.sulfur.dioxide)
+ggplot(data=RW, aes(x=free.sulfur.dioxide)) +
+  geom_histogram(bins=20) +
+  scale_x_continuous(trans='log2')
 
-qplot(data=RW, x=density)
+qplot(data=RW, x=total.sulfur.dioxide, binwidth=4, xlim = c(0,175))
 
-qplot(data=RW, x=pH)
+ggplot(data=RW, aes(x=total.sulfur.dioxide)) +
+  geom_histogram(bins=20) +
+  scale_x_continuous(trans='log2')
 
-qplot(data=RW, x=sulphates)
+qplot(data=RW, x=density, binwidth=.0002)
 
-qplot(data=RW, x=alcohol)
+qplot(data=RW, x=pH, binwidth=.02)
 
-qplot(data=RW, x=quality)
+qplot(data=RW, x=sulphates, binwidth=.02, xlim = c(0,1.5))
+
+qplot(data=RW, x=alcohol, binwidth=.1)
+
+ggplot(data=RW, aes(x=alcohol)) +
+  geom_histogram(bins=40) +
+  scale_x_log10()
+
+ggplot(data=RW, aes(x=quality)) + geom_bar()
 
 ```
 
