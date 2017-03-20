@@ -40,7 +40,7 @@ library(dplyr)
 RW <- read.csv("wineQualityReds.csv")
 ```
 
-Input variables (based on physicochemical tests):
+Input variables (based on physicochemical tests):  
    1 - fixed acidity (tartaric acid - g / dm^3)  
    2 - volatile acidity (acetic acid - g / dm^3)  
    3 - citric acid (g / dm^3)  
@@ -84,68 +84,148 @@ Description of attributes:
    Output variable (based on sensory data):  
    12 - quality (score between 0 and 10)  
 
+```{r echo=FALSE, Mutate_the_Data}
+# Mutate the Data
+RW<-mutate(RW, bound.sulfur.dioxide=total.sulfur.dioxide-free.sulfur.dioxide)
+```
+
+Total sulfur dioxide is an addition of free and bound sulfite. 
+Created a separate column to present the bound sulfur by substracting free from
+the total sulfur.
 
 # Univariate Plots Section
 
 
 ```{r echo=FALSE, Univariate_Plots_1}
 
+RW$quality<-factor(RW$quality, levels=c(3,4,5,6,7,8), ordered = TRUE)
+
 str(RW)
 
+head(RW)
+
 summary(RW)
+
 ```
 
-The dataset consists of 12 variables, with 1599 observations. There are no missing values and the dataset is tidy.
+The dataset consists of 12 variables, with 1599 observations. 
+There are no missing values and the dataset is structured and tidy.
+X is the unique key that identifies each wine. 
+All the other fields except quality are quantitive measurements for that wine.
+Quality is a qualitive field at the ordinal level. I therefore changed the
+integer values into factors ranging from 3 up and until 8.
 
-```{r echo=FALSE, warning=FALSE, Univariate_Plots_2}
-
-table(RW$quality)
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_fixed.acidity}
 
 qplot(data=RW, x=fixed.acidity, binwidth=.2) 
 
-qplot(data=RW, x=volatile.acidity, binwidth=.02, xlim = c(0,1.2))
+```
 
-qplot(data=RW, x=citric.acid, binwidth=.01, xlim = c(0,0.8))
+Most wines have a fixed acidity between 4 and 12 g / dm^3 with a mean of 8,32.
+The distribution is normal and a little bit right skewed.
 
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_volatile.acidity}
+
+qplot(data=RW, x=volatile.acidity, binwidth=.03, xlim = c(0,1.2))
+```
+
+Volatile acidity seems to behave like a bimodal distribution with most values
+between 0.2 and 1.00 g / dm^3, and with a peak at around 0.4 and 0.6 g / dm^3.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_citric.acid}
+qplot(data=RW, x=citric.acid, binwidth=.04, xlim = c(0,0.8))
+```
+
+The citric acid is more or less evenly distributed between 0.02 and 0.5 g / dm^3
+and then drops lineair until 0.78 g / dm^3.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_residual.sugar}
 qplot(data=RW, x=residual.sugar, binwidth=.1, xlim = c(0,10))
 
-qplot(data=RW, x=chlorides, binwidth=.005, xlim = c(0,0.2))
 
+```
+
+Residual sugar looks like a normal distribution between 1.0 and 3.0 but has a
+very long low tail up till 15.00.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_chlorides}
+qplot(data=RW, x=chlorides, binwidth=.005, xlim = c(0,0.2))
+```
+
+Chlorides is a normal distribution a little bit skewed on the right. Most values
+between 0.04 and 0.13 g / dm^3.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_free.sulfur.dioxide}
 ggplot(data=RW, aes(x=free.sulfur.dioxide)) +
   geom_histogram(bins=50) 
 
 ggplot(data=RW, aes(x=free.sulfur.dioxide)) +
   geom_histogram(bins=20) +
-  scale_x_continuous(trans='log2')
+  scale_x_continuous(trans='log10')
+```
 
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_bound.sulfur.dioxide}
+ggplot(data=RW, aes(x=bound.sulfur.dioxide)) +
+  geom_histogram(bins=50) 
+
+ggplot(data=RW, aes(x=bound.sulfur.dioxide)) +
+  geom_histogram(bins=20) +
+  scale_x_continuous(trans='log10')
+```
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_total.sulfur.dioxide}
 qplot(data=RW, x=total.sulfur.dioxide, binwidth=4, xlim = c(0,175))
 
 ggplot(data=RW, aes(x=total.sulfur.dioxide)) +
   geom_histogram(bins=20) +
-  scale_x_continuous(trans='log2')
+  scale_x_continuous(trans='log10')
+```
 
+Free, bound and total sulfur dioxide have a normal distribution on a log 10 
+scale.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_density}
 qplot(data=RW, x=density, binwidth=.0002)
+```
 
+The mean and median are almost the same here. Nice normal distribution.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_pH}
 qplot(data=RW, x=pH, binwidth=.02)
+```
 
+The mean and median are almost the same here.Nice normal distribution.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_sulphates}
 qplot(data=RW, x=sulphates, binwidth=.02, xlim = c(0,1.5))
+```
 
+Sulphates is a normal distribution a little bit skewed on the right. Most values
+between 0.4 and 1.0 g / dm^3.
+
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_alcohol}
 qplot(data=RW, x=alcohol, binwidth=.1)
 
-ggplot(data=RW, aes(x=alcohol)) +
-  geom_histogram(bins=40) +
-  scale_x_log10()
 
-ggplot(data=RW, aes(x=quality)) + geom_bar()
 
 ```
 
+Alcohol percentage is between 9 and 14. It quickly builds up to a peak at 9.5
+percent and then drops lineairly to zero at around 14 percent.
+This is probably due to the fact that alcohol stops the yeasting proces that
+is responsible for the creation of alcohol.
+I wonder how the relation between alcohol and residual sugar looks, since the
+alcohol is a product of the fermentation of the original sugar.
 
-> **Tip**: Make sure that you leave a blank line between the start / end of
-each code block and the end / start of your Markdown text so that it is
-formatted nicely in the knitted text. Note as well that text on consecutive
-lines is treated as a single space. Make sure you have a blank line between
-your paragraphs so that they too are formatted for easy readability.
+```{r echo=FALSE, warning=FALSE, Univariate_Plots_quality, fig.height=6}
+
+ggplot(data=RW, aes(x=quality)) + geom_bar() +  geom_text(stat='count',aes(label=..count..),vjust=-1)
+
+```
+
+The majority of the wines have a score 5 or 6. I wonder how the wines that
+score a 3 or 8 differ from the majority.
+
 
 # Univariate Analysis
 
@@ -156,6 +236,9 @@ gather your observations and add your own if you have other thoughts!
 ### What is the structure of your dataset?
 
 ### What is/are the main feature(s) of interest in your dataset?
+
+Relation quality for every atrribute (facetwrap it or freqpolygram with colors)
+Relation alcohol - residual sugar
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
@@ -174,6 +257,8 @@ between variables might be interesting to look at in this section? Don't limit
 yourself to relationships between a main output feature and one of the
 supporting variables. Try to look at relationships between supporting variables
 as well.
+
+!!!! Facet wrap all variables over quality. Or maybe better use geom='freqpoly'and color=quality
 
 ```{r echo=FALSE, Bivariate_Plots}
 
@@ -264,3 +349,6 @@ future work that could be done with the dataset.
 
 > **Tip**: Don't forget to remove this, and the other **Tip** sections before
 saving your final work and knitting the final report!
+Sites used:
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3472855/
+https://www.stat.berkeley.edu/classes/s133/factors.html
