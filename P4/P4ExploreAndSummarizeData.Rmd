@@ -32,6 +32,7 @@ influence the quality of red wines?
 library(ggplot2)
 library(knitr)
 library(dplyr)
+library(GGally)
 
 ```
 
@@ -229,25 +230,59 @@ score a 3 or 8 differ from the majority.
 
 # Univariate Analysis
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
-
 ### What is the structure of your dataset?
+
+There are 1599 observations of red wines in the dataset with 12 features (fixed
+acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur
+dioxide, total sulfur dioxide, density, pH, sulphates, alcohol % and quality).
+
+All variables except quality are quantitive, continuous variables. 
+Quality is an ordered factor variable with the following levels from worst to
+best: 3, 4, 5, 6, 7, 8.
+
+Other observations:
+
+* Sulfur dioxides have a normal distribution on a log10 scale
+* Citric acid is more or less evenly distributed between 0.02 and 0.5 g / dm^3 
+and then drops lineair until 0.78 g / dm^3.
+* Alcohol percentage quickly builds from 9 percent up to a peak at 9.5 percent
+and then drops lineairly to zero at around 14 percent.
+* Volatile acidity seems to behave like a bimodal distribution.
+* The mean and the median are almost equal for Ph and density.
+* All other continuous variables have a normal distribution with some skewness.
+* 82.5 % of the wines have a quality of 5 or 6. 1,75% has a quality of 3 or 8.
 
 ### What is/are the main feature(s) of interest in your dataset?
 
+
+The main feature in the dataset is quality. I would like to determine Which
+chemical properties influence the quality of red wines
 Relation quality for every atrribute (facetwrap it or freqpolygram with colors)
 Relation alcohol - residual sugar
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
+The relation between alcohol and residual sugar is interesting because alcohol
+is formed during fermentation of sugar. The remaining sugar influences
+the sweetness of the wine.
+Another important taste influencer is acidity expressed in the three types of
+acid(ity) and PH.
+Finally the tanin determines the dryness. Tannin is not measured, but just like
+free sulfur dioxide, it acts as an anti oxidant.
+Lower levels of free sulfur dioxide could indicate higher (not measured) levels
+of tannin.
+
+
 ### Did you create any new variables from existing variables in the dataset?
 
+I created bound.sulfur.dioxide by subtracting free.sulfur.dioxide from
+total.sulfur.dioxide.
+
 ### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+
+I did not find unusual distributions and therefore made no adjustments.
+I did factorize quality.
 
 
 # Bivariate Plots Section
@@ -260,9 +295,21 @@ as well.
 
 !!!! Facet wrap all variables over quality. Or maybe better use geom='freqpoly'and color=quality
 
-```{r echo=FALSE, Bivariate_Plots}
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots}
+
+cor(subset(RW, select=fixed.acidity:alcohol))
 
 ```
+
+Correlation > 0,7 = Large, 0,5 - 0,7 is Moderate, 0,3 - 0,5 small byt meaningfull.
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_ggpairs}
+
+ggpairs (subset(RW, select=fixed.acidity:quality))
+
+```
+
+
 
 # Bivariate Analysis
 
