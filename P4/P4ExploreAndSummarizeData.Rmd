@@ -29,14 +29,12 @@ influence the quality of red wines?
 # for other code chunks once you have verified that each plot comes out as you
 # want it to. This will clean up the flow of your report.
 
-if (!require(knitr)) install.packages("knitr")
-#if (!require(corrplot)) install.packages("corrplot")
 
 library(ggplot2)
 library(knitr)
 library(dplyr)
 library(GGally)
-#library(corrplot)
+library(corrplot)
 
 ```
 
@@ -102,8 +100,6 @@ the total sulfur.
 
 
 ```{r echo=FALSE, Univariate_Plots_1}
-
-RW$quality<-factor(RW$quality, levels=c(3,4,5,6,7,8), ordered = TRUE)
 
 str(RW)
 
@@ -241,7 +237,7 @@ acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur
 dioxide, total sulfur dioxide, density, pH, sulphates, alcohol % and quality).
 
 All variables except quality are quantitive, continuous variables. 
-Quality is an ordered factor variable with the following levels from worst to
+Quality is an ordered variable with the following levels from worst to
 best: 3, 4, 5, 6, 7, 8.
 
 Other observations:
@@ -260,9 +256,11 @@ and then drops lineairly to zero at around 14 percent.
 
 
 The main feature in the dataset is quality. I would like to determine Which
-chemical properties influence the quality of red wines
-Relation quality for every atrribute (facetwrap it or freqpolygram with colors)
-Relation alcohol - residual sugar
+chemical properties influence the quality of red wines.
+I expect that quality is at least determined by the right combination of sweetness 
+(residual sugar and alcohol) and sourness (fixe and volatile acidity, citric acid
+and PH).
+
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
@@ -282,6 +280,7 @@ of tannin.
 
 I created bound.sulfur.dioxide by subtracting free.sulfur.dioxide from
 total.sulfur.dioxide.
+At first I factorised quality with "#RW$quality<-factor(RW$quality, levels=c(3,4,5,6,7,8), ordered = TRUE)", but changed it back because it gave errors with the cor function when I wanted to correlate quality with the other fields.
 
 ### Of the features you investigated, were there any unusual distributions? \
 
@@ -299,64 +298,163 @@ as well.
 
 !!!! Facet wrap all variables over quality. Or maybe better use geom='freqpoly'and color=quality
 
-```{r echo=FALSE, warning=FALSE, Bivariate_Plots}
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_1}
 
-My_cor <- cor(subset(RW, select=fixed.acidity:alcohol))
+My_cor <- cor(subset(RW, select=fixed.acidity:bound.sulfur.dioxide))
 
 My_cor
 
-# corrplot(My_cor, method="circle")
-# corrplot.mixed(My_cor, )
+corrplot(My_cor, method="circle", type="lower")
+corrplot(My_cor, method="number", type="lower", number.cex=0.75)
+
+```
+
+I used the following guidelines for correlation:
+If > 0,7 = Large, 0,7 - 0,5 is Moderate, 0,5 - 0,3 small but meaningfull.
+
+Based on this I see a moderate positive correlation between:  
+* fixed acidity and citric acid  
+* fixed acidity and density  
+
+I see a moderate negative correlation between:  
+* fixed acidity and PH  
+* volatile acidity and citric acid  
+* citric acid and PH  
+* alcohol and density  
+
+I see meaningfull positive correlation between:  
+* citric acid and density  
+* citric acid and sulphates  
+* residual sugar and density  
+* chlorides and sulphates  
+* free sulfur dioxide and bound sulfur dioxode  
+* quality and alcohol  
+
+I see meaningfull negative correlation between:  
+* quality and volatile acidity  
+* PH and density  
+
+I on purpose did not mention the correlation between bound and free sulfur
+dioxide on the one hand and total dioxide on the other hand.
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_2}
 
 # Boxplot of fixed.acidity by quality 
 boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
   	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+
+```
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_3}
 
 # Boxplot of volatile.acidity by quality 
 boxplot(volatile.acidity~quality,data=RW, main="Volatile Acitidity per Quality level", 
   	xlab="Quality", ylab="Volatile Acidity in g / dm^3")
 
+```
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4}
+
 # Boxplot of citric.acid by quality 
 boxplot(citric.acid~quality,data=RW, main="Citric acid per Quality level", 
   	xlab="Quality", ylab="Citric.acid in g / dm^3")
+
+```
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_10}
+
+# Boxplot of PH by quality 
+boxplot(pH~quality,data=RW, main="pH per Quality level", 
+  	xlab="Quality", ylab="pH")
+
+```
+
+From the correlation information and the boxplots it is clear that acidity, acid
+and PH are strongly correlated to each other. But, is it the volatile acidity
+and the citric acid that are correlated to quality. The box plots for these two
+show that higher levels of citric acid and lower levels of volatile acid on
+average lead to a higher quality. What is also noticable, that for quality
+levels 7 and 8, there is hardly any difference. Maybe to discriminate between a
+7 and 8, other factors play a more important role.
+For fixed acidity I don't see significant differences on level 5 and 6 and no
+trend taking the other levels into account. I suppose this is because the the
+majority of measurements is on level 5 and 6.
+A higher fixed acidity does lead to a lower PH. PH and quality are hardly
+correlated. My conclusion is that as long as PH moves somewhere from 3 to 3.8,
+it is ok.
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_5}
 
 # Boxplot of residual.sugar by quality 
 boxplot(residual.sugar~quality,data=RW, main="Residual Sugar per Quality level", 
   	xlab="Quality", ylab="Residual Sugar in g / dm^3")
 
+```
+
+Remark here
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_6}
+
 # Boxplot of free.sulfur.dioxide by quality 
 boxplot(free.sulfur.dioxide~quality,data=RW, main="Free sulfur dioxide per Quality level", 
   	xlab="Quality", ylab="Free sulfur dioxide in mg / dm^3")
+
+```
+
+Remark here
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_7}
 
 # Boxplot of bound.sulfur.dioxide by quality 
 boxplot(bound.sulfur.dioxide~quality,data=RW, main="Bound sulfur dioxide per Quality level", 
   	xlab="Quality", ylab="Bound sulfur dioxide in mg / dm^3")
 
+```
+
+Remark here
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_8}
+
 # Boxplot of total.sulfur.dioxide by quality 
 boxplot(total.sulfur.dioxide~quality,data=RW, main="Total sulfur dioxide per Quality level", 
   	xlab="Quality", ylab="Total sulfur dioxide in mg / dm^3")
 
-# Boxplot of fixed.acidity by quality 
-boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
-  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+```
 
-# Boxplot of fixed.acidity by quality 
-boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
-  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+Remark here
 
-# Boxplot of fixed.acidity by quality 
-boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
-  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_9}
+
+# Boxplot of density by quality 
+boxplot(density~quality,data=RW, main="Density per Quality level", 
+  	xlab="Quality", ylab="Density in g / cm^3")
 
 ```
 
-Correlation > 0,7 = Large, 0,5 - 0,7 is Moderate, 0,3 - 0,5 small byt meaningfull.
+Remark here
 
-```{r echo=FALSE, warning=FALSE, Bivariate_Plots_ggpairs}
 
-ggpairs (subset(RW, select=fixed.acidity:quality))
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_11}
+
+# Boxplot of sulphates by quality 
+boxplot(sulphates~quality,data=RW, main="Sulphates per Quality level", 
+  	xlab="Quality", ylab="Sulphates in g / dm^3")
 
 ```
+
+Remark here
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_12}
+
+# Boxplot of alcohol by quality 
+boxplot(alcohol~quality,data=RW, main="Alcohol per Quality level", 
+  	xlab="Quality", ylab="Alcohol in % by volume")
+
+```
+
+
+
+
 
 
 
