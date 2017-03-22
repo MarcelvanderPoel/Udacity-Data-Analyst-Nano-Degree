@@ -29,10 +29,14 @@ influence the quality of red wines?
 # for other code chunks once you have verified that each plot comes out as you
 # want it to. This will clean up the flow of your report.
 
+if (!require(knitr)) install.packages("knitr")
+#if (!require(corrplot)) install.packages("corrplot")
+
 library(ggplot2)
 library(knitr)
 library(dplyr)
 library(GGally)
+#library(corrplot)
 
 ```
 
@@ -297,7 +301,52 @@ as well.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots}
 
-cor(subset(RW, select=fixed.acidity:alcohol))
+My_cor <- cor(subset(RW, select=fixed.acidity:alcohol))
+
+My_cor
+
+# corrplot(My_cor, method="circle")
+# corrplot.mixed(My_cor, )
+
+# Boxplot of fixed.acidity by quality 
+boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
+  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+
+# Boxplot of volatile.acidity by quality 
+boxplot(volatile.acidity~quality,data=RW, main="Volatile Acitidity per Quality level", 
+  	xlab="Quality", ylab="Volatile Acidity in g / dm^3")
+
+# Boxplot of citric.acid by quality 
+boxplot(citric.acid~quality,data=RW, main="Citric acid per Quality level", 
+  	xlab="Quality", ylab="Citric.acid in g / dm^3")
+
+# Boxplot of residual.sugar by quality 
+boxplot(residual.sugar~quality,data=RW, main="Residual Sugar per Quality level", 
+  	xlab="Quality", ylab="Residual Sugar in g / dm^3")
+
+# Boxplot of free.sulfur.dioxide by quality 
+boxplot(free.sulfur.dioxide~quality,data=RW, main="Free sulfur dioxide per Quality level", 
+  	xlab="Quality", ylab="Free sulfur dioxide in mg / dm^3")
+
+# Boxplot of bound.sulfur.dioxide by quality 
+boxplot(bound.sulfur.dioxide~quality,data=RW, main="Bound sulfur dioxide per Quality level", 
+  	xlab="Quality", ylab="Bound sulfur dioxide in mg / dm^3")
+
+# Boxplot of total.sulfur.dioxide by quality 
+boxplot(total.sulfur.dioxide~quality,data=RW, main="Total sulfur dioxide per Quality level", 
+  	xlab="Quality", ylab="Total sulfur dioxide in mg / dm^3")
+
+# Boxplot of fixed.acidity by quality 
+boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
+  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+
+# Boxplot of fixed.acidity by quality 
+boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
+  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+
+# Boxplot of fixed.acidity by quality 
+boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
+  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
 
 ```
 
