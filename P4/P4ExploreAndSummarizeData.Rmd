@@ -387,7 +387,7 @@ it is ok.
 
 # Boxplot of residual.sugar by quality 
 boxplot(residual.sugar~quality,data=RW, main="Residual Sugar per Quality level", 
-  	xlab="Quality", ylab="Residual Sugar in g / dm^3")
+  	xlab="Quality", ylab="Residual Sugar in g / dm^3", ylim=c(1,6))
 
 ```
 
@@ -397,7 +397,7 @@ Remark here
 
 # Boxplot of free.sulfur.dioxide by quality 
 boxplot(free.sulfur.dioxide~quality,data=RW, main="Free sulfur dioxide per Quality level", 
-  	xlab="Quality", ylab="Free sulfur dioxide in mg / dm^3")
+  	xlab="Quality", ylab="Free sulfur dioxide in mg / dm^3", ylim=c(0,50))
 
 ```
 
@@ -407,7 +407,7 @@ Remark here
 
 # Boxplot of bound.sulfur.dioxide by quality 
 boxplot(bound.sulfur.dioxide~quality,data=RW, main="Bound sulfur dioxide per Quality level", 
-  	xlab="Quality", ylab="Bound sulfur dioxide in mg / dm^3")
+  	xlab="Quality", ylab="Bound sulfur dioxide in mg / dm^3", ylim=c(0,75))
 
 ```
 
@@ -417,7 +417,7 @@ Remark here
 
 # Boxplot of total.sulfur.dioxide by quality 
 boxplot(total.sulfur.dioxide~quality,data=RW, main="Total sulfur dioxide per Quality level", 
-  	xlab="Quality", ylab="Total sulfur dioxide in mg / dm^3")
+  	xlab="Quality", ylab="Total sulfur dioxide in mg / dm^3", ylim=c(0,100))
 
 ```
 
@@ -429,16 +429,22 @@ Remark here
 boxplot(density~quality,data=RW, main="Density per Quality level", 
   	xlab="Quality", ylab="Density in g / cm^3")
 
+ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth()
+ggplot(data = RW, aes(x=density, y=citric.acid)) + geom_point(alpha=0.2, colour="red") + geom_smooth()
+ggplot(data = RW, aes(x=density, y=residual.sugar)) + geom_point(alpha=0.2, colour="green") + geom_smooth()
+ggplot(data = RW, aes(x=density, y=alcohol)) + geom_point(alpha=0.2, colour="purple") + geom_smooth()
+
 ```
 
-Remark here
+Although density has a correlation with quality, I believe this is caused by the
+effect that primarily alcohol and fixed acidity have on density. 
 
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_11}
 
 # Boxplot of sulphates by quality 
 boxplot(sulphates~quality,data=RW, main="Sulphates per Quality level", 
-  	xlab="Quality", ylab="Sulphates in g / dm^3")
+  	xlab="Quality", ylab="Sulphates in g / dm^3", ylim=c(0.3,1.2))
 
 ```
 
