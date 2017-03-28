@@ -290,14 +290,6 @@ I did factorize quality.
 
 # Bivariate Plots Section
 
-> **Tip**: Based on what you saw in the univariate plots, what relationships
-between variables might be interesting to look at in this section? Don't limit
-yourself to relationships between a main output feature and one of the
-supporting variables. Try to look at relationships between supporting variables
-as well.
-
-!!!! Facet wrap all variables over quality. Or maybe better use geom='freqpoly'and color=quality
-
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_1}
 
 My_cor <- cor(subset(RW, select=fixed.acidity:bound.sulfur.dioxide))
@@ -379,9 +371,8 @@ levels 7 and 8, there is hardly any difference. Maybe to discriminate between a
 For fixed acidity I don't see significant differences on level 5 and 6 and no
 trend taking the other levels into account. I suppose this is because the the
 majority of measurements is on level 5 and 6.
-A higher fixed acidity does lead to a lower PH. PH and quality are hardly
-correlated. My conclusion is that as long as PH moves somewhere from 3 to 3.8,
-it is ok.
+A higher fixed acidity does lead to a lower PH. Higher quality wines tend to
+lower PH levels. 
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_5}
 
@@ -391,7 +382,9 @@ boxplot(residual.sugar~quality,data=RW, main="Residual Sugar per Quality level",
 
 ```
 
-Remark here
+I cannot discover any relation between residual sugar and quality. The median
+for the various quality levels is not moving in a certain direction and there
+are lots of outliers for most quality levels.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_6}
 
@@ -401,8 +394,6 @@ boxplot(free.sulfur.dioxide~quality,data=RW, main="Free sulfur dioxide per Quali
 
 ```
 
-Remark here
-
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_7}
 
 # Boxplot of bound.sulfur.dioxide by quality 
@@ -410,8 +401,6 @@ boxplot(bound.sulfur.dioxide~quality,data=RW, main="Bound sulfur dioxide per Qua
   	xlab="Quality", ylab="Bound sulfur dioxide in mg / dm^3", ylim=c(0,75))
 
 ```
-
-Remark here
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_8}
 
@@ -421,7 +410,11 @@ boxplot(total.sulfur.dioxide~quality,data=RW, main="Total sulfur dioxide per Qua
 
 ```
 
-Remark here
+Free and bound (and therefore total) sulfur dioxide does not show a linear 
+relationship with quality, but a normal-like distribution: low levels of SO2
+for low and high quality wines and higher levels of SO2 for the average 
+quality wines. I wonder if in the right combination with other variables like 
+alcohol, sulphates and/or PH, SO2 can improve or worsen a wine.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_9}
 
@@ -429,15 +422,17 @@ Remark here
 boxplot(density~quality,data=RW, main="Density per Quality level", 
   	xlab="Quality", ylab="Density in g / cm^3")
 
-ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth()
-ggplot(data = RW, aes(x=density, y=citric.acid)) + geom_point(alpha=0.2, colour="red") + geom_smooth()
-ggplot(data = RW, aes(x=density, y=residual.sugar)) + geom_point(alpha=0.2, colour="green") + geom_smooth()
-ggplot(data = RW, aes(x=density, y=alcohol)) + geom_point(alpha=0.2, colour="purple") + geom_smooth()
+ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam")
+ggplot(data = RW, aes(x=density, y=citric.acid)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam")
+ggplot(data = RW, aes(x=density, y=residual.sugar)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam")
+ggplot(data = RW, aes(x=density, y=alcohol)) + geom_point(alpha=0.2, colour="purple") + geom_smooth(method = "gam")
 
 ```
 
 Although density has a correlation with quality, I believe this is caused by the
 effect that primarily alcohol and fixed acidity have on density. 
+Alcohol lowers the density, residual sugar, citric acid and fixed acidity
+raises the density.
 
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_11}
@@ -448,7 +443,8 @@ boxplot(sulphates~quality,data=RW, main="Sulphates per Quality level",
 
 ```
 
-Remark here
+Higher quality wines have more sulphates on average. Between quality 7 and 8
+sulphates are not a discriminating factor anymore.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_12}
 
@@ -458,10 +454,10 @@ boxplot(alcohol~quality,data=RW, main="Alcohol per Quality level",
 
 ```
 
-
-
-
-
+Alcohol has the strongest and positive correlation with quality.
+I notice a strange dip in what seems a linear relation between the two at
+quality level 5. Is that because the SO2 amount at quality level 5 is very high
+compared to the other quality levels?
 
 
 # Bivariate Analysis
@@ -472,6 +468,9 @@ here. Use the questions below to guide your discussion.
 ### Talk about some of the relationships you observed in this part of the \
 investigation. How did the feature(s) of interest vary with other features in \
 the dataset?
+
+The lower the pH and the higher the alcohol, the less SO2 a wine needs.
+
 
 ### Did you observe any interesting relationships between the other features \
 (not the main feature(s) of interest)?
