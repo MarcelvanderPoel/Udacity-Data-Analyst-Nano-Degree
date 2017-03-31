@@ -89,6 +89,7 @@ Description of attributes:
 
 ```{r echo=FALSE, Mutate_the_Data}
 # Mutate the Data
+RW <- subset(RW, total.sulfur.dioxide < 150 & alcohol <= 14.0)
 RW<-mutate(RW, bound.sulfur.dioxide=total.sulfur.dioxide-free.sulfur.dioxide)
 ```
 
@@ -284,8 +285,8 @@ At first I factorised quality with "#RW$quality<-factor(RW$quality, levels=c(3,4
 
 ### Of the features you investigated, were there any unusual distributions? \
 
-I did not find unusual distributions and therefore made no adjustments.
-I did factorize quality.
+Total sulphur dioxide has two ourliers that I removed. Alcohol had one outlier
+that I removed.
 
 
 # Bivariate Plots Section
@@ -331,27 +332,53 @@ dioxide on the one hand and total dioxide on the other hand.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_2}
 
-# Boxplot of fixed.acidity by quality 
-boxplot(fixed.acidity~quality,data=RW, main="Fixed Acitidity per Quality level", 
-  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+ggplot(data = RW, aes(x=citric.acid, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("Citric Acid vs Fixed Acidity") +
+  xlab("Citric.acid in g / dm^3") + ylab("Fixed Acidity in g / dm^3")
+
+ggplot(data = RW, aes(x=citric.acid, y=volatile.acidity)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam") + ggtitle ("Citric Acid vs Volatile Acidity") +
+  xlab("Citric.acid in g / dm^3") + ylab("Volatile Acidity in g / dm^3")
+
+ggplot(data = RW, aes(x=fixed.acidity, y=volatile.acidity)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam") + ggtitle ("Fixed Acidity vs Volatile Acidity") +
+  xlab("Fixed Acidity in g / dm^3") + ylab("Volatile Acidity in g / dm^3")
+
 
 ```
 
+While citric acid and fixed acidity are strongly positively correlated, 
+volatile acidity is negatively correlated with the other two.
+
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_3}
+
+# Boxplot of fixed.acidity by quality 
+boxplot(fixed.acidity~quality,data=RW, main="Fixed Acidity per Quality level", 
+  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
 
 # Boxplot of volatile.acidity by quality 
 boxplot(volatile.acidity~quality,data=RW, main="Volatile Acitidity per Quality level", 
   	xlab="Quality", ylab="Volatile Acidity in g / dm^3")
-
-```
-
-```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4}
 
 # Boxplot of citric.acid by quality 
 boxplot(citric.acid~quality,data=RW, main="Citric acid per Quality level", 
   	xlab="Quality", ylab="Citric.acid in g / dm^3")
 
 ```
+
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4}
+ggplot(data = RW, aes(x=pH, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("pH vs Fixed Acidity") +
+  xlab("pH") + ylab("Fixed Acidity in g / dm^3")
+
+ggplot(data = RW, aes(x=pH, y=citric.acid)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam") + ggtitle ("pH vs Citric Acid") +
+  xlab("pH") + ylab("Citric.acid in g / dm^3")
+
+ggplot(data = RW, aes(x=pH, y=volatile.acidity)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam") + ggtitle ("pH vs Volatile Acidity") +
+  xlab("pH") + ylab("Volatile Acidity in g / dm^3")
+
+```
+
+pH is very strongly influenced by fixed acidity (clear direction, close to the
+smooth line),a little bit less strong (data points more spread out) by citric 
+acid, and the least by volatile acidity. More fixed acidity and citric acid add
+to the overal acidity taste, more volatile acidity to less overal acidity taste.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_10}
 
@@ -422,10 +449,14 @@ alcohol, sulphates and/or PH, SO2 can improve or worsen a wine.
 boxplot(density~quality,data=RW, main="Density per Quality level", 
   	xlab="Quality", ylab="Density in g / cm^3")
 
-ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam")
-ggplot(data = RW, aes(x=density, y=citric.acid)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam")
-ggplot(data = RW, aes(x=density, y=residual.sugar)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam")
-ggplot(data = RW, aes(x=density, y=alcohol)) + geom_point(alpha=0.2, colour="purple") + geom_smooth(method = "gam")
+ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("Density vs Fixed Acidity") +
+  xlab("Density in g / cm^3") + ylab("Fixed Acidity in g / dm^3")
+ggplot(data = RW, aes(x=density, y=citric.acid)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam") + ggtitle ("Density vs Citric Acid") +
+  xlab("Density in g / cm^3") + ylab("Citric Acid in g / dm^3")
+ggplot(data = RW, aes(x=density, y=residual.sugar)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam") + ggtitle ("Density vs Residual Sugar") +
+  xlab("Density in g / cm^3") + ylab("Residual Sugar in g / dm^3")
+ggplot(data = RW, aes(x=density, y=alcohol)) + geom_point(alpha=0.2, colour="purple") + geom_smooth(method = "gam") + ggtitle ("Density vs Alcohol") +
+  xlab("Density in g / cm^3") + ylab("Alcohol in % by volume")
 
 ```
 
@@ -462,21 +493,52 @@ compared to the other quality levels?
 
 # Bivariate Analysis
 
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
+### How did the feature of interest vary with other features in the dataset?
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. How did the feature(s) of interest vary with other features in \
-the dataset?
+The feature of interest is quality. I found a number of correlations:  
 
-The lower the pH and the higher the alcohol, the less SO2 a wine needs.
+1.  Citric Acid: Correlation +0.23. Higher quality wines tend to have
+    higher citric acid levels. Between quality levels 7 and 8 I don't see much
+    difference.    
+2.  Volatile Acidity: Correlation -0.39. Higher quality wines tend to have
+    lower volitale acidity levels. Again, between quality levels 7 and 8 I don't
+    see much difference, except that the standard deviation for level 8 is smaller.    
+3.  Bound Sulphur Dioxide: Correlation -0.21. I calculated the bound SO2 by
+    removing the free SO2 from the total SO2. The bound SO2 has the strongest
+    correlation with quality of the three. They all have a normal distribution,
+    meaning that both low and high quality wines have on average low levels of SO2
+    and medium quality wines have high levels of SO2.   
+4.  Sulphates: Correlation +0.25. Higher quality wines tend to have higher
+    sulphates levels. Between quality levels 7 and 8 the mean level is the same,
+    but the standard deviation on level 8 is much smaller.  
+5.  Alcohol %: Highest correlation with quality of +0.48. Higher quality wines
+    on average have higher alcohol levels, but there is a dip on quality level 5.
+    I wonder if this dip can be explained by the high SO2 levels on quality level 5.
+    I checked quality level 5 for the other variables and PH shows a simular,
+    though difficult to see, dip. I want to examine alcohol, bound SO2, PH and
+    quality with one another.  
 
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+### Did you observe any interesting relationships between the other features?
+
+I expected that Citric acid and fixed acidity would have a negative correlation
+with ph, I didn't expect volatile acidity to have a positive correlation.
+I think, that in this case it is relative, meaning, they all contribute to the
+acidity levels, but volatile acidity contributes much less, and therefore
+contibutes to Ph levels on the high end of the range.
+
+Density has a relation with four variables: Alcohol lowers the density, 
+residual sugar, citric acid and fixed acidity raises the density.
 
 ### What was the strongest relationship you found?
 
+The strongest relation I found was between total SO2 and bound SO2. But since I
+derived bound SO2 from total SO2, this is no real surprise.
+
+The next strongest relation I found between PH and fixed acidity (-0.68). 
+
+The strongest relation I found with the feature of interest quality was with
+alcohol (+0.48).
 
 # Multivariate Plots Section
 
@@ -489,6 +551,29 @@ will do that.
 
 ```{r echo=FALSE, Multivariate_Plots}
 
+RW$quality <- factor(RW$quality,levels=c("3","4","5","6","7","8"))
+
+ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_line() + facet_wrap(~quality, ncol = 3) +
+  geom_smooth(method = "gam")
+
+ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_point(aes(colour = quality))
+
+ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = RW) +   
+  geom_line() + facet_wrap(~quality, ncol = 3) +
+  geom_smooth(method = "gam")
+
+ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = RW) +   
+  geom_point(aes(colour = quality))
+
+ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_line() + facet_wrap(~quality, ncol = 3) +
+  geom_smooth(method = "gam")
+
+ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_point(aes(colour = quality))
+  
 ```
 
 # Multivariate Analysis
