@@ -349,17 +349,29 @@ volatile acidity is negatively correlated with the other two.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_3}
 
+RW$quality <- factor(RW$quality,levels=c("3","4","5","6","7","8"))
+
 # Boxplot of fixed.acidity by quality 
-boxplot(fixed.acidity~quality,data=RW, main="Fixed Acidity per Quality level", 
-  	xlab="Quality", ylab="Fixed Acidity in g / dm^3")
+ggplot(RW, aes(quality,fixed.acidity)) +
+  geom_boxplot() +
+  ggtitle("Fixed Acidity per Quality level") + xlab("Quality") + ylab("Fixed Acidity in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 # Boxplot of volatile.acidity by quality 
-boxplot(volatile.acidity~quality,data=RW, main="Volatile Acitidity per Quality level", 
-  	xlab="Quality", ylab="Volatile Acidity in g / dm^3")
+ggplot(RW, aes(quality,volatile.acidity)) +
+  geom_boxplot() +
+  ggtitle("Volatile Acidity per Quality level") + xlab("Quality") + ylab("Volatile Acidity in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 # Boxplot of citric.acid by quality 
-boxplot(citric.acid~quality,data=RW, main="Citric acid per Quality level", 
-  	xlab="Quality", ylab="Citric.acid in g / dm^3")
+ggplot(RW, aes(quality,citric.acid)) +
+  geom_boxplot() +
+  ggtitle("Citric acid per Quality level") + xlab("Quality") + ylab("Citric acid in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
 
 ```
 
@@ -383,8 +395,11 @@ to the overal acidity taste, more volatile acidity to less overal acidity taste.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_10}
 
 # Boxplot of PH by quality 
-boxplot(pH~quality,data=RW, main="pH per Quality level", 
-  	xlab="Quality", ylab="pH")
+ggplot(RW, aes(quality,pH)) +
+  geom_boxplot() +
+  ggtitle("pH per Quality level") + xlab("Quality") + ylab("pH") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 ```
 
@@ -404,8 +419,11 @@ lower PH levels.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_5}
 
 # Boxplot of residual.sugar by quality 
-boxplot(residual.sugar~quality,data=RW, main="Residual Sugar per Quality level", 
-  	xlab="Quality", ylab="Residual Sugar in g / dm^3", ylim=c(1,6))
+ggplot(RW, aes(quality,residual.sugar)) +
+  geom_boxplot() +
+  ggtitle("Residual Sugar per Quality level") + xlab("Quality") + ylab("Residual Sugar in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 ```
 
@@ -416,25 +434,32 @@ are lots of outliers for most quality levels.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_6}
 
 # Boxplot of free.sulfur.dioxide by quality 
-boxplot(free.sulfur.dioxide~quality,data=RW, main="Free sulfur dioxide per Quality level", 
-  	xlab="Quality", ylab="Free sulfur dioxide in mg / dm^3", ylim=c(0,50))
+ggplot(RW, aes(quality,free.sulfur.dioxide)) +
+  geom_boxplot() +
+  ggtitle("Free sulfur dioxide per Quality level") + xlab("Quality") + ylab("Free sulfur dioxide in mg / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 ```
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_7}
 
 # Boxplot of bound.sulfur.dioxide by quality 
-boxplot(bound.sulfur.dioxide~quality,data=RW, main="Bound sulfur dioxide per Quality level", 
-  	xlab="Quality", ylab="Bound sulfur dioxide in mg / dm^3", ylim=c(0,75))
-
+ggplot(RW, aes(quality,bound.sulfur.dioxide)) +
+  geom_boxplot() +
+  ggtitle("Bound sulfur dioxide per Quality level") + xlab("Quality") + ylab("Bound sulfur dioxide in mg / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 ```
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_8}
 
 # Boxplot of total.sulfur.dioxide by quality 
-boxplot(total.sulfur.dioxide~quality,data=RW, main="Total sulfur dioxide per Quality level", 
-  	xlab="Quality", ylab="Total sulfur dioxide in mg / dm^3", ylim=c(0,100))
-
+ggplot(RW, aes(quality,total.sulfur.dioxide)) +
+  geom_boxplot() +
+  ggtitle("Total sulfur dioxide per Quality level") + xlab("Quality") + ylab("Total sulfur dioxide in mg / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 ```
 
 Free and bound (and therefore total) sulfur dioxide does not show a linear 
@@ -446,8 +471,12 @@ alcohol, sulphates and/or PH, SO2 can improve or worsen a wine.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_9}
 
 # Boxplot of density by quality 
-boxplot(density~quality,data=RW, main="Density per Quality level", 
-  	xlab="Quality", ylab="Density in g / cm^3")
+ggplot(RW, aes(quality,density)) +
+  geom_boxplot() +
+  ggtitle("Density per Quality level") + xlab("Quality") + ylab("Density in g / cm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
 
 ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("Density vs Fixed Acidity") +
   xlab("Density in g / cm^3") + ylab("Fixed Acidity in g / dm^3")
@@ -469,9 +498,11 @@ raises the density.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_11}
 
 # Boxplot of sulphates by quality 
-boxplot(sulphates~quality,data=RW, main="Sulphates per Quality level", 
-  	xlab="Quality", ylab="Sulphates in g / dm^3", ylim=c(0.3,1.2))
-
+ggplot(RW, aes(quality,sulphates)) +
+  geom_boxplot() +
+  ggtitle("Sulphates per Quality level") + xlab("Quality") + ylab("Sulphates in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 ```
 
 Higher quality wines have more sulphates on average. Between quality 7 and 8
@@ -479,16 +510,24 @@ sulphates are not a discriminating factor anymore.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_12}
 
+
 # Boxplot of alcohol by quality 
-boxplot(alcohol~quality,data=RW, main="Alcohol per Quality level", 
-  	xlab="Quality", ylab="Alcohol in % by volume")
+ggplot(RW, aes(quality,alcohol)) +
+  geom_boxplot() +
+  ggtitle("Alcohol % per Quality level") + xlab("Quality") + ylab("Alcohol %") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 ```
 
 Alcohol has the strongest and positive correlation with quality.
 I notice a strange dip in what seems a linear relation between the two at
-quality level 5. Is that because the SO2 amount at quality level 5 is very high
-compared to the other quality levels?
+quality level 5, both for mean and median. Is that because the SO2 amount at
+quality level 5 is very high compared to the other quality levels?
+You could also look at it as follows from quality level 5 till 8 there is a
+lineair raise in quality with the alcohol %. The same form level 3 till 4.
+But from 3 till 4 the raise is less steep and the mean and median % is higher
+then 5.  
 
 
 # Bivariate Analysis
@@ -509,7 +548,7 @@ The feature of interest is quality. I found a number of correlations:
     meaning that both low and high quality wines have on average low levels of SO2
     and medium quality wines have high levels of SO2.   
 4.  Sulphates: Correlation +0.25. Higher quality wines tend to have higher
-    sulphates levels. Between quality levels 7 and 8 the mean level is the same,
+    sulphates levels. Between quality levels 7 and 8 the median level is the same,
     but the standard deviation on level 8 is much smaller.  
 5.  Alcohol %: Highest correlation with quality of +0.48. Higher quality wines
     on average have higher alcohol levels, but there is a dip on quality level 5.
@@ -551,29 +590,29 @@ will do that.
 
 ```{r echo=FALSE, Multivariate_Plots}
 
-RW$quality <- factor(RW$quality,levels=c("3","4","5","6","7","8"))
-
-ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = RW) +   
-  geom_line() + facet_wrap(~quality, ncol = 3) +
-  geom_smooth(method = "gam")
-
-ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = RW) +   
-  geom_point(aes(colour = quality))
-
-ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = RW) +   
-  geom_line() + facet_wrap(~quality, ncol = 3) +
-  geom_smooth(method = "gam")
-
-ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = RW) +   
-  geom_point(aes(colour = quality))
-
 ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = RW) +   
   geom_line() + facet_wrap(~quality, ncol = 3) +
   geom_smooth(method = "gam")
 
-ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = RW) +   
-  geom_point(aes(colour = quality))
+ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = subset(RW, quality=="3" | quality=="4" | quality=="8")) +   
+  geom_point(aes(colour = quality)) 
   
+
+ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_line() + facet_wrap(~quality, ncol = 3) +
+  geom_smooth(method = "gam")
+
+ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = subset(RW, quality=="3" | quality=="4" | quality=="8")) +   
+  geom_point(aes(colour = quality))
+
+ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = RW) +   
+  geom_line() + facet_wrap(~quality, ncol = 3) +
+  geom_smooth(method = "gam")
+
+ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = subset(RW, quality=="3" | quality=="4" | quality=="8")) +   
+  geom_point(aes(colour = quality))
+
+
 ```
 
 # Multivariate Analysis
