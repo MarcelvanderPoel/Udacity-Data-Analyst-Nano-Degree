@@ -35,6 +35,7 @@ library(knitr)
 library(dplyr)
 library(GGally)
 library(corrplot)
+library(gridExtra)
 
 ```
 
@@ -48,7 +49,7 @@ Input variables (based on physicochemical tests):
    2 - volatile acidity (acetic acid - g / dm^3)  
    3 - citric acid (g / dm^3)  
    4 - residual sugar (g / dm^3)  
-   5 - chlorides (sodium chloride - g / dm^3  
+   5 - chlorides (sodium chloride - g / dm^3)  
    6 - free sulfur dioxide (mg / dm^3)  
    7 - total sulfur dioxide (mg / dm^3)  
    8 - density (g / cm^3)  
@@ -375,6 +376,11 @@ ggplot(RW, aes(quality,citric.acid)) +
 
 ```
 
+Volitale acidity has an almost lineair influence on quality, with no distinction between quality level 7 and 8.
+Citric acid's influence on quality is not lineair, but the citric acid's level makes jumps between every two quality levels.
+There are three groups: quality levels 3 and 4, 5 and 6, 7 and 8. Within the groups citric acid's level is more or less stable,
+between the groups levels make a jump.
+
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4}
 ggplot(data = RW, aes(x=pH, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("pH vs Fixed Acidity") +
   xlab("pH") + ylab("Fixed Acidity in g / dm^3")
@@ -392,7 +398,7 @@ smooth line),a little bit less strong (data points more spread out) by citric
 acid, and the least by volatile acidity. More fixed acidity and citric acid add
 to the overal acidity taste, more volatile acidity to less overal acidity taste.
 
-```{r echo=FALSE, warning=FALSE, Bivariate_Plots_10}
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4a}
 
 # Boxplot of PH by quality 
 ggplot(RW, aes(quality,pH)) +
@@ -588,32 +594,40 @@ create here are justified by the plots you explored in the previous section. If
 you plan on creating any mathematical models, this is the section where you
 will do that.
 
-```{r echo=FALSE, Multivariate_Plots}
+```{r echo=FALSE, Multivariate_Plots_01}
 
-ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = RW) +   
-  geom_line() + facet_wrap(~quality, ncol = 3) +
+p1 = ggplot(RW, aes(quality,citric.acid)) +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))
+
+p2 = ggplot(RW, aes(quality,volatile.acidity)) +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))
+
+p3 = ggplot(RW, aes(quality,bound.sulfur.dioxide)) +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))
+
+p4 = ggplot(RW, aes(quality,sulphates)) +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))
+
+p5 = ggplot(RW, aes(quality,alcohol)) +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))
+
+grid.arrange(p1,p2,p3,p4,p5,ncol=5)
+
+```
+
+The 5 most important correlations with quality. 
+
+```{r echo=FALSE, Multivariate_Plots_02}
+
+ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_point() + facet_wrap(~quality, ncol = 3) +
   geom_smooth(method = "gam")
-
-ggplot(aes(y = bound.sulfur.dioxide, x = alcohol, group=quality, colour=quality), data = subset(RW, quality=="3" | quality=="4" | quality=="8")) +   
-  geom_point(aes(colour = quality)) 
-  
-
-ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = RW) +   
-  geom_line() + facet_wrap(~quality, ncol = 3) +
-  geom_smooth(method = "gam")
-
-ggplot(aes(x = pH, y = alcohol, group=quality, colour=quality), data = subset(RW, quality=="3" | quality=="4" | quality=="8")) +   
-  geom_point(aes(colour = quality))
-
-ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = RW) +   
-  geom_line() + facet_wrap(~quality, ncol = 3) +
-  geom_smooth(method = "gam")
-
-ggplot(aes(x = pH, y = bound.sulfur.dioxide, group=quality, colour=quality), data = subset(RW, quality=="3" | quality=="4" | quality=="8")) +   
-  geom_point(aes(colour = quality))
 
 
 ```
+
+Lower alcohol % gives a lower quality, but with the right amount of bound sulfur
+dioxide, lower % alcohol wines can be get a higher quality level. 
 
 # Multivariate Analysis
 
