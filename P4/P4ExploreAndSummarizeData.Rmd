@@ -1,7 +1,7 @@
 ---
 title: "P4 Explore and Summarize Data"
 author: "M.J. van der Poel"
-date: "5 maart 2017"
+date: "April 10th 2017"
 output:
   html_document: default
   pdf_document: default
@@ -36,6 +36,10 @@ library(dplyr)
 library(GGally)
 library(corrplot)
 library(gridExtra)
+library(lattice)
+library(MASS)
+library(memisc)
+
 
 ```
 
@@ -540,28 +544,29 @@ then 5.
 
 ### How did the feature of interest vary with other features in the dataset?
 
-The feature of interest is quality. I found a number of correlations:  
+The feature of interest is quality. I found a 5 interesting correlations in order
+of their magnitude:
 
-1.  Citric Acid: Correlation +0.23. Higher quality wines tend to have
-    higher citric acid levels. Between quality levels 7 and 8 I don't see much
-    difference.    
-2.  Volatile Acidity: Correlation -0.39. Higher quality wines tend to have
-    lower volitale acidity levels. Again, between quality levels 7 and 8 I don't
-    see much difference, except that the standard deviation for level 8 is smaller.    
-3.  Bound Sulphur Dioxide: Correlation -0.21. I calculated the bound SO2 by
-    removing the free SO2 from the total SO2. The bound SO2 has the strongest
-    correlation with quality of the three. They all have a normal distribution,
-    meaning that both low and high quality wines have on average low levels of SO2
-    and medium quality wines have high levels of SO2.   
-4.  Sulphates: Correlation +0.25. Higher quality wines tend to have higher
-    sulphates levels. Between quality levels 7 and 8 the median level is the same,
-    but the standard deviation on level 8 is much smaller.  
-5.  Alcohol %: Highest correlation with quality of +0.48. Higher quality wines
+1.  Alcohol %: Highest correlation with quality of +0.48. Higher quality wines
     on average have higher alcohol levels, but there is a dip on quality level 5.
     I wonder if this dip can be explained by the high SO2 levels on quality level 5.
     I checked quality level 5 for the other variables and PH shows a simular,
     though difficult to see, dip. I want to examine alcohol, bound SO2, PH and
-    quality with one another.  
+    quality with one another.      
+2.  Volatile Acidity: Correlation -0.39. Higher quality wines tend to have
+    lower volitale acidity levels. Again, between quality levels 7 and 8 I don't
+    see much difference, except that the standard deviation for level 8 is smaller.    
+3.  Sulphates: Correlation +0.25. Higher quality wines tend to have higher
+    sulphates levels. Between quality levels 7 and 8 the median level is the same,
+    but the standard deviation on level 8 is much smaller.
+4.  Citric Acid: Correlation +0.23. Higher quality wines tend to have
+    higher citric acid levels. Between quality levels 7 and 8 I don't see much
+    difference. 
+5.  Bound Sulphur Dioxide: Correlation -0.21. I calculated the bound SO2 by
+    removing the free SO2 from the total SO2. The bound SO2 has the strongest
+    correlation with quality of the three. They all have a normal distribution,
+    meaning that both low and high quality wines have on average low levels of SO2
+    and medium quality wines have high levels of SO2.
 
 
 ### Did you observe any interesting relationships between the other features?
@@ -586,13 +591,6 @@ The strongest relation I found with the feature of interest quality was with
 alcohol (+0.48).
 
 # Multivariate Plots Section
-
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
 
 ```{r echo=FALSE, Multivariate_Plots_01}
 
@@ -629,63 +627,158 @@ ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality)
 Lower alcohol % gives a lower quality, but with the right amount of bound sulfur
 dioxide, lower % alcohol wines can be get a higher quality level. 
 
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots_03}
+
+m1<-lm(quality ~ alcohol ,data=RW)
+m2<-update(m1,~. + volatile.acidity)
+m3<-update(m2,~. + sulphates)
+m4<-update(m3,~. + citric.acid)
+m5<-update(m4,~. + bound.sulfur.dioxide)
+
+mtable(m1,m2,m3,m4,m5)
+
+
+```
+
 # Multivariate Analysis
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. Were there features that strengthened each other in terms of \
-looking at your feature(s) of interest?
+### Bound sulfur dioxide and alcohol vs quality
 
-### Were there any interesting or surprising interactions between features?
+Bound sulfur dioxide levels bigger than around 25mg per dm^3 seem to raise the 
+quality level of wines containing lower % level of alcohol.
+Between quality levels 4 and 5 there is a slight drop in average alcohol %, but
+there is a bigger spread in bound sulfur dioxide. At level 6, the spread of
+sulfur dioxide is again smaller, but from this point on, alcohol % starts rising.
 
-### OPTIONAL: Did you create any models with your dataset? Discuss the \
-strengths and limitations of your model.
+### Lineair multivariable model
+
+the lineiar multivariable model for the wine quality is as follows:
+
+Quality = 0.837 + (0.293 * alcohol %) - (1.198 * volatile acidity) + 
+(0.748 * sulphates) - (0.024 * citric acid) - (0.004 * bound sulfur dioxide)
+
+The model does not take into account the how the relation between higher bound 
+sulfur dioxide levels and lower alchol % can influence the wine quality.
 
 ------
 
 # Final Plots and Summary
 
-> **Tip**: You've done a lot of exploration and have built up an understanding
-of the structure of and relationships between the variables in your dataset.
-Here, you will select three plots from all of your previous exploration to
-present here as a summary of some of your most interesting findings. Make sure
-that you have refined your selected plots for good titling, axis labels (with
-units), and good aesthetic choices (e.g. color, transparency). After each plot,
-make sure you justify why you chose each plot by describing what it shows.
-
 ### Plot One
 ```{r echo=FALSE, Plot_One}
+
+ggplot(data=RW, aes(x=quality)) + geom_bar(colour="black", fill="slateblue1") +  geom_text(stat='count',aes(label=..count..),vjust=-1)
 
 ```
 
 ### Description One
 
+The first plot shows the distribution of the 1599 red wines in the dataset. 
+The larger part of the wines fall in quality levels 5 or 6 (more than 80 %).
+The number of wines at the highest and the lowest quality level are very low 
+(less than 2 %).
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
+
+p1 = ggplot(RW, aes(quality,alcohol)) +
+  geom_boxplot(colour="black", fill="slateblue1") +
+  ggtitle("Alcohol % per Q-level") + xlab("Quality") + ylab("Alcohol %") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
+p2 = ggplot(RW, aes(quality,volatile.acidity)) +
+  geom_boxplot(colour="black", fill="slateblue1") +
+  ggtitle("Volatile Acidity per Q-level") + xlab("Quality") + ylab("Volatile Ac. in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
+p3 = ggplot(RW, aes(quality,sulphates)) +
+  geom_boxplot(colour="black", fill="slateblue1") +
+  ggtitle("Sulphates per Q-level") + xlab("Quality") + ylab("Sulphates in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
+p4 = ggplot(RW, aes(quality,citric.acid)) +
+  geom_boxplot(colour="black", fill="slateblue1") +
+  ggtitle("Citric acid per Q-level") + xlab("Quality") + ylab("Citric acid in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
+p5 = ggplot(RW, aes(quality,bound.sulfur.dioxide)) +
+  geom_boxplot(colour="black", fill="slateblue1") +
+    ggtitle("Bound SO2 per Q-level") + xlab("Quality") + ylab("Bound SO2 in mg / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+
+grid.arrange(p1,p2,p3,p4,p5, ncol=3)
 
 ```
 
 ### Description Two
 
+In order of their correlation with quality, the five features with the highest
+correlation are shown. All features except bound SO2 show a linear relationship
+with quality. Alcohol % shows a dip in at quality level 5 in it's linear
+relationship with quality where bound SO2 shows a peak.
+
+In order of their correlation the following features influence quality:  
+* Alcohol  
+* Volatile acidity  
+* Sulphates  
+* Citric acid  
+
+Bound SO2 seems to "boost" the quality of red wine when alcohol % is low.
+
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
+
+ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality), data = RW) +   
+  geom_point() + facet_wrap(~quality, ncol = 3) +
+  geom_smooth(method = "gam", colour="black")
 
 ```
 
 ### Description Three
 
+Bound sulfur dioxide levels bigger than around 25mg per dm^3 seem to raise the 
+quality level of wines containing lower % level of alcohol. When alcohol %
+rises, the influence of bound SO2 deminishes. 
+
 ------
 
 # Reflection
 
-> **Tip**: Here's the final step! Reflect on the exploration you performed and
-the insights you found. What were some of the struggles that you went through?
-What went well? What was surprising? Make sure you include an insight into
-future work that could be done with the dataset.
+In retrospective, the most difficult part I found was to determine when to stop
+investigating features or combinations of features and when to move on.
+For me it is not an exact science and it took me some time to decide that there
+was nothing more to discover, although later on I sometimes needed to revisit
+the topic.
 
-> **Tip**: Don't forget to remove this, and the other **Tip** sections before
-saving your final work and knitting the final report!
-Sites used:
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3472855/
-https://www.stat.berkeley.edu/classes/s133/factors.html
+What went well was following the univariate, bivariate and multivariate approach.
+This helped me to focus and build up the story I wanted to tell.
+What also worked out well was my decision to calculate bound SO2 from free and 
+total SO2. There was a stronger correlation with bound SO2 and quality then with
+the total/free SO2 and quality. What did surprise me was how the relation looks
+(with the dip). 
+
+Still, I think that wine quality can not be captured so easily by the features
+that were given. Wine is a complex product with much more nuances in taste and
+scent.
+
+For future work I would like to have the a finer graded rating like the Robert
+Parker 100-point scale to see if the distribution of the wine quality is normal.
+Also I expect it will more insight the correlation between quality and the other
+features. Using the original scores by the three experts instead of one average
+score would already add to more granularity.
+
+
+Sites used:  
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3472855/  
+https://www.stat.berkeley.edu/classes/s133/factors.html  
+http://docs.ggplot2.org  
+http://stats.idre.ucla.edu/r/modules  
+http://stackoverflow.com  
+
