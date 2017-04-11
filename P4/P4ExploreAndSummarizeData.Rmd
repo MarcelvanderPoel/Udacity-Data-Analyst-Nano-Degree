@@ -1,7 +1,7 @@
 ---
 title: "P4 Explore and Summarize Data"
 author: "M.J. van der Poel"
-date: "April 10th 2017"
+date: "April 11th 2017"
 output:
   html_document: default
   pdf_document: default
@@ -10,7 +10,9 @@ output:
 Red Wine Quality
 ========================================================
 
-This tidy data set contains 1,599 red wines with 11 variables on the chemical properties of the wine. At least 3 wine experts rated the quality of each wine, providing a rating between 0 (very bad) and 10 (very excellent).
+This tidy data set contains 1,599 red wines with 11 variables on the chemical 
+properties of the wine. At least 3 wine experts rated the quality of each wine,
+providing a rating between 0 (very bad) and 10 (very excellent).
 
 The guiding question in this investigation is Which chemical properties 
 influence the quality of red wines?
@@ -124,43 +126,84 @@ integer values into factors ranging from 3 up and until 8.
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_fixed.acidity}
 
-qplot(data=RW, x=fixed.acidity, binwidth=.2) 
+grid.arrange( ggplot(aes(x=fixed.acidity), data = RW) +
+  geom_histogram( binwidth=.2) ,
+   ggplot(aes(x=1, y=fixed.acidity), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
 
 ```
 
 Most wines have a fixed acidity between 4 and 12 g / dm^3 with a mean of 8,32.
-The distribution is normal and a little bit right skewed.
+The distribution is normal and a little bit right skewed. Outliers on the right.
+1st Quartile = 7.1 g / dm^3
+Median = 7.9 g / dm^3
+3rd Quartile = 9.2 g / dm^3
+Mean = 8.316 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_volatile.acidity}
 
-qplot(data=RW, x=volatile.acidity, binwidth=.03, xlim = c(0,1.2))
+grid.arrange( ggplot(aes(x=volatile.acidity), data = RW) +
+  geom_histogram( binwidth=.03) + xlim(0,1.2),
+   ggplot(aes(x=1, y=volatile.acidity), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
+
 ```
 
 Volatile acidity seems to behave like a bimodal distribution with most values
 between 0.2 and 1.00 g / dm^3, and with a peak at around 0.4 and 0.6 g / dm^3.
+Outliers on the right.
+1st Quartile = 0.39 g / dm^3
+Median = 0.52 g / dm^3
+3rd Quartile = 0.64 g / dm^3
+Mean = 0.5274 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_citric.acid}
-qplot(data=RW, x=citric.acid, binwidth=.04, xlim = c(0,0.8))
+
+grid.arrange( ggplot(aes(x=citric.acid), data = RW) +
+  geom_histogram( binwidth=.04) + xlim(0,0.8),
+   ggplot(aes(x=1, y=citric.acid), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
+
 ```
 
 The citric acid is more or less evenly distributed between 0.02 and 0.5 g / dm^3
 and then drops lineair until 0.78 g / dm^3.
+1st Quartile = 0.09 g / dm^3
+Median = 0.26 g / dm^3
+3rd Quartile = 0.42 g / dm^3
+Mean = 0.2698 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_residual.sugar}
-qplot(data=RW, x=residual.sugar, binwidth=.1, xlim = c(0,10))
 
+grid.arrange( ggplot(aes(x=residual.sugar), data = RW) +
+  geom_histogram( binwidth=.1) + xlim(0,10),
+   ggplot(aes(x=1, y=residual.sugar), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
 
 ```
 
 Residual sugar looks like a normal distribution between 1.0 and 3.0 but has a
 very long low tail up till 15.00.
+1st Quartile = 1.9 g / dm^3
+Median = 2.2 g / dm^3
+3rd Quartile = 2.6 g / dm^3
+Mean = 2.2521 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_chlorides}
-qplot(data=RW, x=chlorides, binwidth=.005, xlim = c(0,0.2))
+
+grid.arrange( ggplot(aes(x=chlorides), data = RW) +
+  geom_histogram( binwidth=.005) + xlim(0,0.2),
+   ggplot(aes(x=1, y=chlorides), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
+
 ```
 
 Chlorides is a normal distribution a little bit skewed on the right. Most values
 between 0.04 and 0.13 g / dm^3.
+1st Quartile = 0.07 g / dm^3
+Median = 0.079 g / dm^3
+3rd Quartile = 0.09 g / dm^3
+Mean = 0.0875 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_free.sulfur.dioxide}
 ggplot(data=RW, aes(x=free.sulfur.dioxide)) +
@@ -171,6 +214,11 @@ ggplot(data=RW, aes(x=free.sulfur.dioxide)) +
   scale_x_continuous(trans='log10')
 ```
 
+1st Quartile = 7.0 mg / dm^3
+Median = 13.0 mg / dm^3
+3rd Quartile = 21.0 mg / dm^3
+Mean = 15.73 mg / dm^3
+
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_bound.sulfur.dioxide}
 ggplot(data=RW, aes(x=bound.sulfur.dioxide)) +
   geom_histogram(bins=50) 
@@ -180,6 +228,11 @@ ggplot(data=RW, aes(x=bound.sulfur.dioxide)) +
   scale_x_continuous(trans='log10')
 ```
 
+1st Quartile = 12.0 mg / dm^3
+Median = 21.0 mg / dm^3
+3rd Quartile = 39.0 mg / dm^3
+Mean = 29.94 mg / dm^3
+
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_total.sulfur.dioxide}
 qplot(data=RW, x=total.sulfur.dioxide, binwidth=4, xlim = c(0,175))
 
@@ -188,50 +241,94 @@ ggplot(data=RW, aes(x=total.sulfur.dioxide)) +
   scale_x_continuous(trans='log10')
 ```
 
+1st Quartile = 22.0 mg / dm^3
+Median = 38.0 mg / dm^3
+3rd Quartile = 61.0 mg / dm^3
+Mean = 45.67 mg / dm^3
+
 Free, bound and total sulfur dioxide have a normal distribution on a log 10 
 scale.
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_density}
-qplot(data=RW, x=density, binwidth=.0002)
+
+grid.arrange( ggplot(aes(x=density), data = RW) +
+  geom_histogram( binwidth=.0002),
+   ggplot(aes(x=1, y=density), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
+
+
 ```
 
-The mean and median are almost the same here. Nice normal distribution.
+The mean and median are the same here. Nice normal distribution.
+1st Quartile = 99.56 g / dm^3
+Median = 99.67 g / dm^3
+3rd Quartile = 99.78 g / dm^3
+Mean = 99.67 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_pH}
-qplot(data=RW, x=pH, binwidth=.02)
+
+grid.arrange( ggplot(aes(x=pH), data = RW) +
+  geom_histogram( binwidth=.02),
+   ggplot(aes(x=1, y=pH), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
+
+
 ```
 
 The mean and median are almost the same here.Nice normal distribution.
+1st Quartile = 3.21
+Median = 3.310
+3rd Quartile = 3.4
+Mean = 3.312
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_sulphates}
-qplot(data=RW, x=sulphates, binwidth=.02, xlim = c(0,1.5))
+
+grid.arrange( ggplot(aes(x=sulphates), data = RW) +
+  geom_histogram( binwidth=.02) + xlim(0,1.5),
+   ggplot(aes(x=1, y=sulphates), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
+
 ```
 
 Sulphates is a normal distribution a little bit skewed on the right. Most values
 between 0.4 and 1.0 g / dm^3.
+1st Quartile = 0.55 g / dm^3
+Median = 0.62 g / dm^3
+3rd Quartile = 0.73 g / dm^3
+Mean = 0.6582 g / dm^3
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_alcohol}
-qplot(data=RW, x=alcohol, binwidth=.1)
 
-
+grid.arrange( ggplot(aes(x=alcohol), data = RW) +
+  geom_histogram( binwidth=.1) ,
+   ggplot(aes(x=1, y=alcohol), data = RW) +
+  geom_boxplot( )  , nrow =1, widths=c(3,1))
 
 ```
 
-Alcohol percentage is between 9 and 14. It quickly builds up to a peak at 9.5
-percent and then drops lineairly to zero at around 14 percent.
+Alcohol percentage is between 8.4% and 14%. It quickly builds up to a peak at 
+9.5% and then drops lineairly to zero at around 14%.
 This is probably due to the fact that alcohol stops the yeasting proces that
 is responsible for the creation of alcohol.
 I wonder how the relation between alcohol and residual sugar looks, since the
 alcohol is a product of the fermentation of the original sugar.
+1st Quartile = 9.5%
+Median = 10.2%
+3rd Quartile = 11.1%
+Mean = 10.42%
 
 ```{r echo=FALSE, warning=FALSE, Univariate_Plots_quality, fig.height=6}
 
-ggplot(data=RW, aes(x=quality)) + geom_bar() +  geom_text(stat='count',aes(label=..count..),vjust=-1)
+ggplot(data=RW, aes(x=quality)) + geom_bar() +
+  geom_text(stat='count',aes(label=..count..),vjust=-1)
 
 ```
 
 The majority of the wines have a score 5 or 6. I wonder how the wines that
 score a 3 or 8 differ from the majority.
+1st Quartile = 5
+Median = 6
+3rd Quartile = 6
 
 
 # Univariate Analysis
@@ -263,9 +360,9 @@ and then drops lineairly to zero at around 14 percent.
 
 The main feature in the dataset is quality. I would like to determine Which
 chemical properties influence the quality of red wines.
-I expect that quality is at least determined by the right combination of sweetness 
-(residual sugar and alcohol) and sourness (fixe and volatile acidity, citric acid
-and PH).
+I expect that quality is at least determined by the right combination of 
+sweetness (residual sugar and alcohol) and sourness (fixe and volatile acidity, 
+citric acid and PH).
 
 
 ### What other features in the dataset do you think will help support your \
@@ -286,7 +383,10 @@ of tannin.
 
 I created bound.sulfur.dioxide by subtracting free.sulfur.dioxide from
 total.sulfur.dioxide.
-At first I factorised quality with "#RW$quality<-factor(RW$quality, levels=c(3,4,5,6,7,8), ordered = TRUE)", but changed it back because it gave errors with the cor function when I wanted to correlate quality with the other fields.
+At first I factorised quality with 
+"#RW$quality<-factor(RW$quality, levels=c(3,4,5,6,7,8), ordered = TRUE)", but 
+changed it back because it gave errors with the cor function when I wanted to 
+correlate quality with the other fields.
 
 ### Of the features you investigated, were there any unusual distributions? \
 
@@ -296,7 +396,7 @@ that I removed.
 
 # Bivariate Plots Section
 
-```{r echo=FALSE, warning=FALSE, Bivariate_Plots_1}
+```{r echo=FALSE, warning=FALSE, Bivariate_Plots_1, fig.width=14, fig.height=10}
 
 My_cor <- cor(subset(RW, select=fixed.acidity:bound.sulfur.dioxide))
 
@@ -337,89 +437,132 @@ dioxide on the one hand and total dioxide on the other hand.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_2}
 
-ggplot(data = RW, aes(x=citric.acid, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("Citric Acid vs Fixed Acidity") +
-  xlab("Citric.acid in g / dm^3") + ylab("Fixed Acidity in g / dm^3")
+ggplot(data = RW, aes(x=citric.acid, y=fixed.acidity)) +
+  geom_point(alpha=0.2, colour="blue") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Citric Acid vs Fixed Acidity") +
+  xlab("Citric.acid in g / dm^3") + 
+  ylab("Fixed Acidity in g / dm^3")
 
-ggplot(data = RW, aes(x=citric.acid, y=volatile.acidity)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam") + ggtitle ("Citric Acid vs Volatile Acidity") +
-  xlab("Citric.acid in g / dm^3") + ylab("Volatile Acidity in g / dm^3")
+ggplot(data = RW, aes(x=citric.acid, y=volatile.acidity)) + 
+  geom_point(alpha=0.2, colour="green") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Citric Acid vs Volatile Acidity") +
+  xlab("Citric.acid in g / dm^3") + 
+  ylab("Volatile Acidity in g / dm^3")
 
-ggplot(data = RW, aes(x=fixed.acidity, y=volatile.acidity)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam") + ggtitle ("Fixed Acidity vs Volatile Acidity") +
-  xlab("Fixed Acidity in g / dm^3") + ylab("Volatile Acidity in g / dm^3")
-
+ggplot(data = RW, aes(x=fixed.acidity, y=volatile.acidity)) + 
+  geom_point(alpha=0.2, colour="red") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Fixed Acidity vs Volatile Acidity") +
+  xlab("Fixed Acidity in g / dm^3") + 
+  ylab("Volatile Acidity in g / dm^3")
 
 ```
 
-While citric acid and fixed acidity are strongly positively correlated, 
-volatile acidity is negatively correlated with the other two.
+While citric acid and fixed acidity are strongly positively correlated (+0.68), 
+volatile acidity is negatively correlated with the other two (-0.27 and -0.56).
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_3}
 
 RW$quality <- factor(RW$quality,levels=c("3","4","5","6","7","8"))
 
 # Boxplot of fixed.acidity by quality 
+
 ggplot(RW, aes(quality,fixed.acidity)) +
-  geom_boxplot() +
-  ggtitle("Fixed Acidity per Quality level") + xlab("Quality") + ylab("Fixed Acidity in g / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Fixed Acidity per Quality level") + 
+  xlab("Quality") + 
+  ylab("Fixed Acidity in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4) 
 
 # Boxplot of volatile.acidity by quality 
+
 ggplot(RW, aes(quality,volatile.acidity)) +
-  geom_boxplot() +
-  ggtitle("Volatile Acidity per Quality level") + xlab("Quality") + ylab("Volatile Acidity in g / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Volatile Acidity per Quality level") + 
+  xlab("Quality") + 
+  ylab("Volatile Acidity in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
 # Boxplot of citric.acid by quality 
-ggplot(RW, aes(quality,citric.acid)) +
-  geom_boxplot() +
-  ggtitle("Citric acid per Quality level") + xlab("Quality") + ylab("Citric acid in g / dm^3") +
-  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
+ggplot(RW, aes(quality,citric.acid)) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Citric acid per Quality level") + 
+  xlab("Quality") + 
+  ylab("Citric acid in g / dm^3") +
+  stat_summary(fun.y=mean, geom="line", aes(group=1))  +
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
 ```
 
-Volitale acidity has an almost lineair influence on quality, with no distinction between quality level 7 and 8.
-Citric acid's influence on quality is not lineair, but the citric acid's level makes jumps between every two quality levels.
-There are three groups: quality levels 3 and 4, 5 and 6, 7 and 8. Within the groups citric acid's level is more or less stable,
-between the groups levels make a jump.
+Volitale acidity has an almost lineair influence on quality, with no distinction
+between quality level 7 and 8. Citric acid's influence on quality is not lineair
+, but the citric acid's level makes jumps between every two quality levels.
+There are three groups: quality levels 3 and 4, 5 and 6, 7 and 8. 
+Within the groups citric acid's level is more or less stable, between the groups
+levels make a jump.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4}
-ggplot(data = RW, aes(x=pH, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("pH vs Fixed Acidity") +
-  xlab("pH") + ylab("Fixed Acidity in g / dm^3")
 
-ggplot(data = RW, aes(x=pH, y=citric.acid)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam") + ggtitle ("pH vs Citric Acid") +
-  xlab("pH") + ylab("Citric.acid in g / dm^3")
+ggplot(data = RW, aes(x=pH, y=fixed.acidity)) + 
+  geom_point(alpha=0.2, colour="blue") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("pH vs Fixed Acidity") +
+  xlab("pH") + 
+  ylab("Fixed Acidity in g / dm^3")
 
-ggplot(data = RW, aes(x=pH, y=volatile.acidity)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam") + ggtitle ("pH vs Volatile Acidity") +
-  xlab("pH") + ylab("Volatile Acidity in g / dm^3")
+ggplot(data = RW, aes(x=pH, y=citric.acid)) + 
+  geom_point(alpha=0.2, colour="green") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("pH vs Citric Acid") +
+  xlab("pH") + 
+  ylab("Citric.acid in g / dm^3")
+
+ggplot(data = RW, aes(x=pH, y=volatile.acidity)) + 
+  geom_point(alpha=0.2, colour="red") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("pH vs Volatile Acidity") +
+  xlab("pH") + 
+  ylab("Volatile Acidity in g / dm^3")
 
 ```
 
 pH is very strongly influenced by fixed acidity (clear direction, close to the
-smooth line),a little bit less strong (data points more spread out) by citric 
-acid, and the least by volatile acidity. More fixed acidity and citric acid add
-to the overal acidity taste, more volatile acidity to less overal acidity taste.
+smooth line, correlation -0.69),a little bit less strong (data points more 
+spread out) by citric acid (-0.54), and the least by volatile acidity (+0.24).
+More fixed acidity and citric acid add to the overal acidity taste, more 
+volatile acidity to less overal acidity taste.
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_4a}
 
 # Boxplot of PH by quality 
+
 ggplot(RW, aes(quality,pH)) +
-  geom_boxplot() +
-  ggtitle("pH per Quality level") + xlab("Quality") + ylab("pH") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("pH per Quality level") + 
+  xlab("Quality") + 
+  ylab("pH") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
 ```
 
 From the correlation information and the boxplots it is clear that acidity, acid
 and PH are strongly correlated to each other. But, is it the volatile acidity
-and the citric acid that are correlated to quality. The box plots for these two
-show that higher levels of citric acid and lower levels of volatile acid on
-average lead to a higher quality. What is also noticable, that for quality
-levels 7 and 8, there is hardly any difference. Maybe to discriminate between a
-7 and 8, other factors play a more important role.
+(-0.39) and the citric acid (+0.23) that are correlated to quality. 
+The box plots for these two show that higher levels of citric acid and lower 
+levels of volatile acid on average lead to a higher quality. 
+What is also noticable, that for quality levels 7 and 8, there is hardly any 
+difference. Maybe to discriminate between a 7 and 8, other factors play a more
+important role.
 For fixed acidity I don't see significant differences on level 5 and 6 and no
 trend taking the other levels into account. I suppose this is because the the
 majority of measurements is on level 5 and 6.
@@ -429,11 +572,16 @@ lower PH levels.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_5}
 
 # Boxplot of residual.sugar by quality 
+
 ggplot(RW, aes(quality,residual.sugar)) +
-  geom_boxplot() +
-  ggtitle("Residual Sugar per Quality level") + xlab("Quality") + ylab("Residual Sugar in g / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ylim(1,5) +
+  ggtitle("Residual Sugar per Quality level") + 
+  xlab("Quality") + 
+  ylab("Residual Sugar in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
 ```
 
@@ -444,32 +592,46 @@ are lots of outliers for most quality levels.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_6}
 
 # Boxplot of free.sulfur.dioxide by quality 
+
 ggplot(RW, aes(quality,free.sulfur.dioxide)) +
-  geom_boxplot() +
-  ggtitle("Free sulfur dioxide per Quality level") + xlab("Quality") + ylab("Free sulfur dioxide in mg / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Free sulfur dioxide per Quality level") + 
+  xlab("Quality") + 
+  ylab("Free sulfur dioxide in mg / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
 ```
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_7}
 
 # Boxplot of bound.sulfur.dioxide by quality 
+
 ggplot(RW, aes(quality,bound.sulfur.dioxide)) +
-  geom_boxplot() +
-  ggtitle("Bound sulfur dioxide per Quality level") + xlab("Quality") + ylab("Bound sulfur dioxide in mg / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Bound sulfur dioxide per Quality level") + 
+  xlab("Quality") + 
+  ylab("Bound sulfur dioxide in mg / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
+
 ```
 
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_8}
 
 # Boxplot of total.sulfur.dioxide by quality 
+
 ggplot(RW, aes(quality,total.sulfur.dioxide)) +
-  geom_boxplot() +
-  ggtitle("Total sulfur dioxide per Quality level") + xlab("Quality") + ylab("Total sulfur dioxide in mg / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Total sulfur dioxide per Quality level") + 
+  xlab("Quality") + 
+  ylab("Total sulfur dioxide in mg / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
+
 ```
 
 Free and bound (and therefore total) sulfur dioxide does not show a linear 
@@ -481,21 +643,43 @@ alcohol, sulphates and/or PH, SO2 can improve or worsen a wine.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_9}
 
 # Boxplot of density by quality 
+
 ggplot(RW, aes(quality,density)) +
-  geom_boxplot() +
-  ggtitle("Density per Quality level") + xlab("Quality") + ylab("Density in g / cm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Density per Quality level") + 
+  xlab("Quality") + 
+  ylab("Density in g / cm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
+ggplot(data = RW, aes(x=density, y=fixed.acidity)) + 
+  geom_point(alpha=0.2, colour="blue") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Density vs Fixed Acidity") +
+  xlab("Density in g / cm^3") + 
+  ylab("Fixed Acidity in g / dm^3")
 
-ggplot(data = RW, aes(x=density, y=fixed.acidity)) + geom_point(alpha=0.2, colour="blue") + geom_smooth(method = "gam") + ggtitle ("Density vs Fixed Acidity") +
-  xlab("Density in g / cm^3") + ylab("Fixed Acidity in g / dm^3")
-ggplot(data = RW, aes(x=density, y=citric.acid)) + geom_point(alpha=0.2, colour="red") + geom_smooth(method = "gam") + ggtitle ("Density vs Citric Acid") +
-  xlab("Density in g / cm^3") + ylab("Citric Acid in g / dm^3")
-ggplot(data = RW, aes(x=density, y=residual.sugar)) + geom_point(alpha=0.2, colour="green") + geom_smooth(method = "gam") + ggtitle ("Density vs Residual Sugar") +
-  xlab("Density in g / cm^3") + ylab("Residual Sugar in g / dm^3")
-ggplot(data = RW, aes(x=density, y=alcohol)) + geom_point(alpha=0.2, colour="purple") + geom_smooth(method = "gam") + ggtitle ("Density vs Alcohol") +
-  xlab("Density in g / cm^3") + ylab("Alcohol in % by volume")
+ggplot(data = RW, aes(x=density, y=citric.acid)) + 
+  geom_point(alpha=0.2, colour="red") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Density vs Citric Acid") +
+  xlab("Density in g / cm^3") + 
+  ylab("Citric Acid in g / dm^3")
+
+ggplot(data = RW, aes(x=density, y=residual.sugar)) + 
+  geom_point(alpha=0.2, colour="green") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Density vs Residual Sugar") +
+  xlab("Density in g / cm^3") + 
+  ylab("Residual Sugar in g / dm^3")
+
+ggplot(data = RW, aes(x=density, y=alcohol)) + 
+  geom_point(alpha=0.2, colour="purple") + 
+  geom_smooth(method = "gam") + 
+  ggtitle ("Density vs Alcohol") +
+  xlab("Density in g / cm^3") + 
+  ylab("Alcohol in % by volume")
 
 ```
 
@@ -508,11 +692,16 @@ raises the density.
 ```{r echo=FALSE, warning=FALSE, Bivariate_Plots_11}
 
 # Boxplot of sulphates by quality 
+
 ggplot(RW, aes(quality,sulphates)) +
-  geom_boxplot() +
-  ggtitle("Sulphates per Quality level") + xlab("Quality") + ylab("Sulphates in g / dm^3") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Sulphates per Quality level") + 
+  xlab("Quality") + 
+  ylab("Sulphates in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
+
 ```
 
 Higher quality wines have more sulphates on average. Between quality 7 and 8
@@ -522,15 +711,19 @@ sulphates are not a discriminating factor anymore.
 
 
 # Boxplot of alcohol by quality 
+
 ggplot(RW, aes(quality,alcohol)) +
-  geom_boxplot() +
-  ggtitle("Alcohol % per Quality level") + xlab("Quality") + ylab("Alcohol %") +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  ggtitle("Alcohol % per Quality level") + 
+  xlab("Quality") + 
+  ylab("Alcohol %") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
-  stat_summary(fun.y = mean, geom = 'point', shape = 4) 
+  stat_summary(fun.y=mean, geom = 'point', color = 'red', shape = 8, size = 4)
 
 ```
 
-Alcohol has the strongest and positive correlation with quality.
+Alcohol has the strongest and positive correlation with quality (+0.48).
 I notice a strange dip in what seems a linear relation between the two at
 quality level 5, both for mean and median. Is that because the SO2 amount at
 quality level 5 is very high compared to the other quality levels?
@@ -544,29 +737,32 @@ then 5.
 
 ### How did the feature of interest vary with other features in the dataset?
 
-The feature of interest is quality. I found a 5 interesting correlations in order
-of their magnitude:
+The feature of interest is quality. I found a 5 interesting correlations in 
+order of their magnitude:
 
 1.  Alcohol %: Highest correlation with quality of +0.48. Higher quality wines
-    on average have higher alcohol levels, but there is a dip on quality level 5.
-    I wonder if this dip can be explained by the high SO2 levels on quality level 5.
+    on average have higher alcohol levels, but there is a dip on quality 
+    level 5.
+    I wonder if this dip can be explained by the high SO2 levels on quality 
+    level 5.
     I checked quality level 5 for the other variables and PH shows a simular,
     though difficult to see, dip. I want to examine alcohol, bound SO2, PH and
     quality with one another.      
 2.  Volatile Acidity: Correlation -0.39. Higher quality wines tend to have
     lower volitale acidity levels. Again, between quality levels 7 and 8 I don't
-    see much difference, except that the standard deviation for level 8 is smaller.    
+    see much difference, except that the standard deviation for level 8 is 
+    smaller.    
 3.  Sulphates: Correlation +0.25. Higher quality wines tend to have higher
-    sulphates levels. Between quality levels 7 and 8 the median level is the same,
-    but the standard deviation on level 8 is much smaller.
+    sulphates levels. Between quality levels 7 and 8 the median level is the 
+    same, but the standard deviation on level 8 is much smaller.
 4.  Citric Acid: Correlation +0.23. Higher quality wines tend to have
     higher citric acid levels. Between quality levels 7 and 8 I don't see much
     difference. 
 5.  Bound Sulphur Dioxide: Correlation -0.21. I calculated the bound SO2 by
     removing the free SO2 from the total SO2. The bound SO2 has the strongest
     correlation with quality of the three. They all have a normal distribution,
-    meaning that both low and high quality wines have on average low levels of SO2
-    and medium quality wines have high levels of SO2.
+    meaning that both low and high quality wines have on average low levels of 
+    SO2 and medium quality wines have high levels of SO2.
 
 
 ### Did you observe any interesting relationships between the other features?
@@ -592,7 +788,7 @@ alcohol (+0.48).
 
 # Multivariate Plots Section
 
-```{r echo=FALSE, Multivariate_Plots_01}
+```{r echo=FALSE, Multivariate_Plots_01, fig.width=14, fig.height=10}
 
 p1 = ggplot(RW, aes(quality,citric.acid)) +
   stat_summary(fun.y=mean, geom="line", aes(group=1))
@@ -617,10 +813,11 @@ The 5 most important correlations with quality.
 
 ```{r echo=FALSE, Multivariate_Plots_02}
 
-ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality), data = RW) +   
-  geom_point() + facet_wrap(~quality, ncol = 3) +
+ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality)
+       , data = RW) +   
+  geom_point() + 
+  facet_wrap(~quality, ncol = 3) +
   geom_smooth(method = "gam")
-
 
 ```
 
@@ -665,9 +862,11 @@ sulfur dioxide levels and lower alchol % can influence the wine quality.
 # Final Plots and Summary
 
 ### Plot One
-```{r echo=FALSE, Plot_One}
+```{r echo=FALSE, Plot_One, fig.height=8}
 
-ggplot(data=RW, aes(x=quality)) + geom_bar(colour="black", fill="slateblue1") +  geom_text(stat='count',aes(label=..count..),vjust=-1)
+ggplot(data=RW, aes(x=quality)) + 
+  geom_bar(colour="black", fill="slateblue1") +  
+  geom_text(stat='count',aes(label=..count..),vjust=-1)
 
 ```
 
@@ -679,35 +878,45 @@ The number of wines at the highest and the lowest quality level are very low
 (less than 2 %).
 
 ### Plot Two
-```{r echo=FALSE, Plot_Two}
+```{r echo=FALSE, Plot_Two, fig.width=14, fig.height=8}
 
 p1 = ggplot(RW, aes(quality,alcohol)) +
   geom_boxplot(colour="black", fill="slateblue1") +
-  ggtitle("Alcohol % per Q-level") + xlab("Quality") + ylab("Alcohol %") +
+  ggtitle("Alcohol % per Q-level") + 
+  xlab("Quality") + 
+  ylab("Alcohol %") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
   stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 p2 = ggplot(RW, aes(quality,volatile.acidity)) +
   geom_boxplot(colour="black", fill="slateblue1") +
-  ggtitle("Volatile Acidity per Q-level") + xlab("Quality") + ylab("Volatile Ac. in g / dm^3") +
+  ggtitle("Volatile Acidity per Q-level") + 
+  xlab("Quality") + 
+  ylab("Volatile Ac. in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
   stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 p3 = ggplot(RW, aes(quality,sulphates)) +
   geom_boxplot(colour="black", fill="slateblue1") +
-  ggtitle("Sulphates per Q-level") + xlab("Quality") + ylab("Sulphates in g / dm^3") +
+  ggtitle("Sulphates per Q-level") + 
+  xlab("Quality") + 
+  ylab("Sulphates in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
   stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 p4 = ggplot(RW, aes(quality,citric.acid)) +
   geom_boxplot(colour="black", fill="slateblue1") +
-  ggtitle("Citric acid per Q-level") + xlab("Quality") + ylab("Citric acid in g / dm^3") +
+  ggtitle("Citric acid per Q-level") + 
+  xlab("Quality") + 
+  ylab("Citric acid in g / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
   stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
 p5 = ggplot(RW, aes(quality,bound.sulfur.dioxide)) +
   geom_boxplot(colour="black", fill="slateblue1") +
-    ggtitle("Bound SO2 per Q-level") + xlab("Quality") + ylab("Bound SO2 in mg / dm^3") +
+  ggtitle("Bound SO2 per Q-level") + 
+  xlab("Quality") + 
+  ylab("Bound SO2 in mg / dm^3") +
   stat_summary(fun.y=mean, geom="line", aes(group=1))  +
   stat_summary(fun.y = mean, geom = 'point', shape = 4) 
 
@@ -734,7 +943,11 @@ Bound SO2 seems to "boost" the quality of red wine when alcohol % is low.
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
 
-ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality), data = RW) +   
+ggplot(aes(x = bound.sulfur.dioxide, y = alcohol, group=quality, colour=quality),
+       data = RW) +   
+  ggtitle("Influence Bound SO2 on Q-level at lower alcohol %'s") + 
+  xlab("Bound SO2 in mg / dm^3") + 
+  ylab("Alcohol [%]") +
   geom_point() + facet_wrap(~quality, ncol = 3) +
   geom_smooth(method = "gam", colour="black")
 
