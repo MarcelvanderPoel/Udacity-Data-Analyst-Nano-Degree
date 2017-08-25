@@ -118,11 +118,14 @@ with very high values (outliers) from which i assume it is the total of all data
 persons, I removed them from the dataset. 
 2) LOCKHART EUGENE E is the only person with NaN values for all features. I removed him from the dataset.
 
-I used SelectKBest to determine the most powerful features for classifying after rescaling them with the MinMax rescaler.
 I made the assumption that POI share fraud related information more between themselves then with non-POI and that this
 could show through the relative portion of mail they send and receive from other POI. For this I created four additional
-features, from which from_poi_perc had the hightest score. 
+features, the percentage of mail received from POI, send to POI and these two percentages added and multiplied.
 
+I used SelectKBest to select the 10 most powerful features for classifying after rescaling them with the MinMax rescaler.
+Based on these 10 I fitted and compared all the machine learning algorithms and choose the best performing Gaussian
+Naive Bayes. With GNB I then compared all possible values for k for SelectKBest and found out that the 5 strongest 
+features gave the best results. None of the new features were in this top 5:
 
 <table class="tg">
   <tr>
@@ -149,378 +152,13 @@ features, from which from_poi_perc had the hightest score.
     <td>deferred_income</td>
     <td>11.46</td>
   </tr>
-  <tr>
-    <td>long_term_incentive</td>
-    <td>9.92</td>
-  </tr>
-  <tr>
-    <td>restricted_stock</td>
-    <td>9.21</td>
-  </tr>
-  <tr>
-    <td>total_payments</td>
-    <td>8.77</td>
-  </tr>
-  <tr>
-    <td>shared_receipt_with_poi</td>
-    <td>8.59</td>
-  </tr>
- <tr>
-    <td>from_poi_perc</td>
-    <td>7.22</td>
-  </tr>
+
 </table>
 
 
 ## Picking an algorithm
 
 I looked at the following classification algorithms, with and without PCA. Principal component analysis is used on all these algorithms to reduce the dimensionality of the input features.
-With 5 principal components I get 92% of the variation in the data.
-<TABLE BORDER=0>
-<TR>
-<TD>
-<table>
-  <tr>
-    <th>Gaussian Naive Bayes  with PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.41</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.9</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.33</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.92</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.34</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.91</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Decision Tree Classifier  with PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.22</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.89</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.23</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.88</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.21</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.88</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Support Vector Machines  with PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.87</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.93</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Logistic Regression  with PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.3</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.88</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.07</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.99</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.11</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.93</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>KMeans  with PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.3</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.78</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.34</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.73</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.21</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.72</td>
-  </tr>
-</table>
-</TD>
-<TD>
-<table>
-  <tr>
-    <th>Gaussian Naive Bayes  without PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.35</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.9</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.33</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.88</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.3</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.89</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Decision Tree Classifier  without PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.26</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.89</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.27</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.88</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.24</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.89</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Support Vector Machines  without PCA</th>
-    <td></td>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.87</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.93</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Logistic Regression  without PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.3</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.88</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.08</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.99</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.12</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.93</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>KMeans  without PCA</th>
-    <th></th>
-  </tr>
-  <tr>
-    <td>precision poi</td>
-    <td>0.32</td>
-  </tr>
-  <tr>
-    <td>precision non-poi</td>
-    <td>0.78</td>
-  </tr>
-  <tr>
-    <td>recall poi</td>
-    <td>0.36</td>
-  </tr>
-  <tr>
-    <td>recall non-poi</td>
-    <td>0.71</td>
-  </tr>
-  <tr>
-    <td>f1 poi</td>
-    <td>0.22</td>
-  </tr>
-  <tr>
-    <td>f1 non-poi</td>
-    <td>0.7</td>
-  </tr>
-</table>
-</TD>
-</TR>
-</TABLE>
-In choosing the best algorithm, I found it important that the recall on POI is high, making sure
-that POI are not easily missed. After that I found a precision on non-poi more important,
-than the precision on poi; I rather select to many POI than missing one.
-
-KMeans and GNB with and without PCA score almost the same highest score on recall POI, KMeans
-being slightly better. But GNB has a much better score on precision non-POI. Therefore, I prefered GNB. 
-But since there is nothing to tune with GNB, I took KMeans without PCA to tune.
-
-## Tuning an algorithm
-
-I used GridSearchCV with the following parameters to tune KMeans: 
-{'n_clusters': [1,2,3,4,5,6,7,8,9] , 'algorithm':('auto', 'full', 'elkan')
-                , 'init':('k-means++', 'random'), 'n_init': [1,2,5,10,20]}.
-                
-The best estimator was KMeans(algorithm='full', copy_x=True, init='random', max_iter=300,
-    n_clusters=9, n_init=2, n_jobs=1, precompute_distances='auto', random_state=None, tol=0.0001, verbose=0).
-     
-I noticed GridSearchCV uses a different scoring and doesn't follow my high recall on poi/high precision on non-poi
-scoring. I lowered the n_clusters step by step to find an optimum and found that at n_clusters = 2. 
-Then, the best estimator was KMeans(algorithm='elkan', copy_x=True, init='random', max_iter=300,
-    n_clusters=2, n_init=1, n_jobs=1, precompute_distances='auto', random_state=None, tol=0.0001, verbose=0).    
 
 <TABLE BORDER=0>
 <TR>
@@ -531,83 +169,375 @@ Then, the best estimator was KMeans(algorithm='elkan', copy_x=True, init='random
     <th></th>
   </tr>
   <tr>
-    <td>precision poi</td>
-    <td>0.41</td>
+    <td>accuracy</td>
+    <td>0.84757</td>
   </tr>
   <tr>
-    <td>precision non-poi</td>
-    <td>0.9</td>
+    <td>precision</td>
+    <td>0.45059</td>
   </tr>
   <tr>
-    <td>recall poi</td>
-    <td>0.33</td>
+    <td>recall</td>
+    <td>0.3055</td>
   </tr>
   <tr>
-    <td>recall non-poi</td>
-    <td>0.92</td>
+    <td>f1</td>
+    <td>0.36412</td>
   </tr>
   <tr>
-    <td>f1 poi</td>
-    <td>0.34</td>
+    <td></td>
+    <td></td>
   </tr>
   <tr>
-    <td>f1 non-poi</td>
-    <td>0.91</td>
+    <th>Decision Tree Classifier  with PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.78664</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.23652</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.2215</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.22876</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Support Vector Machines  with PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.851</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.10185</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.0055</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.01044</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Logistic Regression  with PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.86264</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.63322</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.0915</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.1599</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>KMeans  with PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.58079</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.1621</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.464</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.24026</td>
   </tr>
 </table>
 </TD>
-<TD> 
+<TD>
 <table>
   <tr>
-    <th>Tuned KMeans without PCA</th>
-    <th></th>
+    <th>Gaussian Naive Bayes  without PCA</td>
+    <td></td>
   </tr>
   <tr>
-    <td>precision poi</td>
-    <td>0.26</td>
+    <td>accuracy</td>
+    <td>0.85464</td>
   </tr>
   <tr>
-    <td>precision non-poi</td>
-    <td>0.74</td>
+    <td>precision</td>
+    <td>0.48876</td>
   </tr>
   <tr>
-    <td>recall poi</td>
-    <td>0.47</td>
+    <td>recall</td>
+    <td>0.3805</td>
   </tr>
   <tr>
-    <td>recall non-poi</td>
-    <td>0.55</td>
+    <td>f1</td>
+    <td>0.42789</td>
   </tr>
   <tr>
-    <td>f1 poi</td>
-    <td>0.24</td>
+    <td></td>
+    <td></td>
   </tr>
   <tr>
-    <td>f1 non-poi</td>
-    <td>0.58</td>
+    <th>Decision Tree Classifier  without PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.79614</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.27967</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.271</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.27527</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Support Vector Machines  without PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.851</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.10185</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.0055</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.01044</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Logistic Regression  without PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.86571</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.67857</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.114</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.19521</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>KMeans  without PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.5955</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.1614</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.4365</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.23566</td>
   </tr>
 </table>  
 </TD>
 </TR>
 </TABLE>                
 
+Gaussian Naive Bayes, with and without PCA, is the only algorithm that scores more than 0.3 for both recall and
+precision.
+
+Gaussian Naive Bayes is a simple algorithm that can't be tuned, I therefore tried to see if tuning the second best, 
+decision tree, would result in better scores.
+
+## Tuning an algorithm
+
+Parameter tuning in machine learning is the process of optimizing parameter settings for a learning algorithm.
+Tuning your algorithm allows you to get the best possible results. 
+
+I used GridSearchCV with the following parameters to tune DecisionTreeClassifier: 
+{'criterion': ('gini', 'entropy') , 'splitter':('best', 'random'), 'min_samples_split': [2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+    'min_samples_leaf': [1,2,3], 'max_features': [4,5,6,7,8,9,10]}.
+                
+The best estimator was DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=None,
+            max_features=5, max_leaf_nodes=None, min_impurity_split=1e-07,
+            min_samples_leaf=3, min_samples_split=6,
+            min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+            splitter='random')
+     
+Compared to Gaussian Naive Bayes the tuned DecisionTreeClassifier did not give better results for recall and precision.    
+
+<TABLE BORDER=0>
+<TR>
+<TD>
+<table>
+  <tr>
+    <th>Gaussian Naive Bayes  with PCA</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.84757</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.45059</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.3055</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.36412</td>
+  </tr>
+</table>
+</TD>
+<TD> 
+<table>
+  <tr>
+    <th>Gaussian Naive Bayes  without PCA</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.85464</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.48876</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.3805</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.42789</td>
+  </tr>
+</table>  
+</TD>
+<TD> 
+<table>
+  <tr>
+    <th>Tuned decision tree without pca</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>accuracy</td>
+    <td>0.84114</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>0.37665</td>
+  </tr>
+  <tr>
+    <td>recall</td>
+    <td>0.171</td>
+  </tr>
+  <tr>
+    <td>f1</td>
+    <td>0.23521</td>
+  </tr>
+</table>  
+</TD>
+</TR>
+</TABLE>                
+
+
 ## Validation
 
-I validated my results on metrics by splitting the data in 2/3 of training data and 1/3 of test data. To get better
-metrics, I repeatedly fitted my classifiers and averaged the metrics over all the fits. The validation gave me the
-metrics to measure the performance of the classifiers I investigated. It also made me aware of overfitting. 
+Model validation in machine learning is the process where a trained model is evaluated with a testing data set, where 
+training and testing data are separate portions of the same data set. We do this to make sure that the model has the
+ability to be used to make predictions with a known reliability using other data sets.
+
+I validated my results originally by splitting the data in 2/3 of training data and 1/3 of test data. To get better
+metrics, I repeatedly fitted my classifiers and averaged the metrics over all the fits. But while doing this I did not
+take into account that each fitting did not have approximately the same number of data points of POI and non-POI. 
+I solved this by using the stratified shuffle split with the same settings as tester.py, to be able to compare the
+results. This prevents imbalance in the distribution of the POI-indicator in the training and testing set. 
 
 ## Evaluation Metrics
 
-As described above, I prefer a higher score on recall POI and after that on precision non-POI.
-Based on this I would choose the KMeans without PCA. But the project criteria state that precision and recall
-should at least be 0.3, therefore the Gaussian Naive Bayes with PCA is the winner here. 
+Precision and recall were used as evaluation metrics. Recall is a metric that describes the number of true positives
+in the population of true positives and false negatives combined (e.g. the percentage of POI identified correctly from 
+all POI). Precision is a metric that describes the number of true positives in the population of true positives and 
+false positives combined (e.g. the percentage of 'real' POI from all people identified as POI).
+The f1-score is the harmonic mean of precision and recall. Gaussian Naive Bayes without PCA scores best on all metrics 
+and is therefore the best algorithm for this project.
 
 References:
 1) Sklearn Documentation on http://scikit-learn.org
 2) Udacity Course documentation
 3) Stackoverflow website
 4) Python documentation at https://docs.python.org
+5) https://link.springer.com/referenceworkentry/10.1007%2F978-1-4419-9863-7_233
+6) https://en.wikipedia.org/wiki/Hyperparameter_(machine_learning)
+7) https://machinelearningmastery.com/how-to-improve-machine-learning-results/
+8) https://books.google.nl/books?id=EwNwDQAAQBAJ&pg=PA108&lpg=PA108&dq=sklearn+pipeline+for+dummies+selectkbest&source=bl&ots=xz5q1AGmB-&sig=LpD1YHJq8CTxet58V4bV7uc6Wqs&hl=nl&sa=X&ved=0ahUKEwikmJqxovPVAhUIKlAKHRnQCg4Q6AEIajAI#v=onepage&q=sklearn%20pipeline%20for%20dummies%20selectkbest&f=false
+
+
 
 I have cited above the origins of an parts of the submission that were taken from websites,
 forums, blog posts, github repositories, etc.

@@ -7,13 +7,15 @@ import numpy as np
 import operator
 sys.path.append("../tools/")
 
-from tester import dump_classifier_and_data
-from sklearn.feature_selection import SelectKBest, f_classif
-from sklearn.preprocessing import MinMaxScaler
-from feature_format import featureFormat, targetFeatureSplit
-from sklearn import cross_validation
-from sklearn.decomposition import PCA
-from sklearn.metrics import precision_score, recall_score, f1_score
+from tester                     import dump_classifier_and_data
+from sklearn.feature_selection  import SelectKBest, f_classif
+from sklearn.preprocessing      import MinMaxScaler
+from feature_format             import featureFormat, targetFeatureSplit
+from sklearn                    import cross_validation
+from sklearn.cross_validation   import StratifiedShuffleSplit
+from sklearn.decomposition      import PCA
+from sklearn.metrics            import precision_score, recall_score, f1_score, classification_report
+from sklearn.pipeline           import Pipeline
 
 
 def compute_poi_communication_index(from_this_person_to_poi, from_poi_to_this_person, from_messages, to_messages):
@@ -38,59 +40,70 @@ def compute_poi_communication_index(from_this_person_to_poi, from_poi_to_this_pe
 
     return from_poi_perc, to_poi_perc, from_to_add, from_to_mlt
 
-def clf_fit_and_evaluate(clf, features, labels, pca_on, print_it, iters):
 
-    ### run the evaluation 200 times and take the average scores, because every unique evaluation gives an unique score
+def test_classifier(clf, dataset, feature_list, pca_on, folds=1000):
 
-    prec_poi, prec_non_poi, rec_poi, rec_non_poi, f1_poi, f1_non_poi = 0, 0, 0, 0, 0, 0
-
-    divider = iters
-    
-    for iter in range (iters):
-
-        ### split the data in 30% test data and 70% training data, no random state to get different results every split
-        training_features, testing_features, training_labels, testing_labels = \
-            cross_validation.train_test_split(features, labels, test_size=0.33)
+    data = featureFormat(dataset, feature_list, sort_keys=True)
+    labels, features = targetFeatureSplit(data)
+    scaler = MinMaxScaler()
+    features = scaler.fit_transform(features)
+    cv = StratifiedShuffleSplit(labels, folds, random_state=42)
+    true_negatives = 0
+    false_negatives = 0
+    true_positives = 0
+    false_positives = 0
+    for train_idx, test_idx in cv:
+        features_train = []
+        features_test = []
+        labels_train = []
+        labels_test = []
+        for ii in train_idx:
+            features_train.append(features[ii])
+            labels_train.append(labels[ii])
+        for jj in test_idx:
+            features_test.append(features[jj])
+            labels_test.append(labels[jj])
 
         ### if principal component analysis is used, train and test data must be converted before fitting
 
         if pca_on:
             pca = PCA(n_components = 5)
-            pca.fit(training_features)
-            training_features = pca.transform(training_features)
-            testing_features = pca.transform(testing_features)
+            pca.fit(features_train)
+            features_train = pca.transform(features_train)
+            features_test = pca.transform(features_test)
 
-        ### fit classifier, predict and determine precision, recall and f1
-        clf.fit(training_features, training_labels)
-        pred = clf.predict(testing_features)
-        precision = precision_score(testing_labels, pred, average=None)
-        # when scoring fails, ignore it
-        try:
-            prec_poi+=precision[1]
-            prec_non_poi+=precision[0]       
-            recall = recall_score(testing_labels, pred, average=None)
-            rec_poi += recall[1]
-            rec_non_poi += recall[0]
-            f1 = f1_score(testing_labels, pred, average=None)
-            f1_poi += f1[1]
-            f1_non_poi += f1[0]
-        except:
-            divider-=1
+        ### fit the classifier using training set, and test on test set
+        clf.fit(features_train, labels_train)
+        predictions = clf.predict(features_test)
+        for prediction, truth in zip(predictions, labels_test):
+            if prediction == 0 and truth == 0:
+                true_negatives += 1
+            elif prediction == 0 and truth == 1:
+                false_negatives += 1
+            elif prediction == 1 and truth == 0:
+                false_positives += 1
+            elif prediction == 1 and truth == 1:
+                true_positives += 1
+            else:
+                print "Warning: Found a predicted label not == 0 or 1."
+                print "All predictions should take value 0 or 1."
+                print "Evaluating performance for processed predictions:"
+                break
+    try:
+        total_predictions = true_negatives + false_negatives + false_positives + true_positives
+        accuracy = 1.0 * (true_positives + true_negatives) / total_predictions
+        precision = 1.0 * true_positives / (true_positives + false_positives)
+        recall = 1.0 * true_positives / (true_positives + false_negatives)
+        f1 = 2.0 * true_positives / (2 * true_positives + false_positives + false_negatives)
+        f2 = (1 + 2.0 * 2.0) * precision * recall / (4 * precision + recall)
 
-
-    prec_poi/=divider
-    prec_non_poi/=divider
-    rec_poi/=divider
-    rec_non_poi/=divider
-    f1_poi/=divider
-    f1_non_poi/=divider
-    if print_it:
-        print 'precision poi      : ', round(prec_poi, 2)
-        print 'precision non-poi  : ', round(prec_non_poi, 2)
-        print 'recall poi         : ', round(rec_poi, 2)
-        print 'recall non-poi     : ', round(rec_non_poi, 2)
-        print 'f1 poi             : ', round(f1_poi, 2)
-        print 'f1 non-poi         : ', round(f1_non_poi, 2)
+        print 'accuracy  : ', round(accuracy, 5)
+        print 'precision : ', round(precision, 5)
+        print 'recall    : ', round(recall, 5)
+        print 'f1        : ', round(f1, 5)
+    except:
+        print "Got a divide by zero when trying out:", clf
+        print "Precision or recall may be undefined due to a lack of true positive predicitons."
 
 
 ### Task 1: Select what features you'll use.
@@ -149,13 +162,33 @@ for key in keys:
 add_features = np.array(added_features)
 
 features = np.concatenate((features,add_features),axis=1)
-
+print 'Features', data_dict
 # Rescale features
 scaler = MinMaxScaler()
 rescaled_features = scaler.fit_transform(features)
 
-# Select 10 best features
-selector = SelectKBest(score_func=f_classif, k=10)
+from sklearn.naive_bayes import GaussianNB
+clf = GaussianNB()
+
+print ''
+print 'Determine best k for SelectKbest'
+print ''
+
+predictors = features_list + ['from_poi_perc', 'to_poi_perc', 'from_to_add', 'from_to_mult']
+
+for num_of_features in range(1, 23):
+
+    print 'Number of features: ', num_of_features
+
+    pipeline = Pipeline(steps=[("sel", SelectKBest(k=num_of_features)),
+                               ("clf", clf)])
+
+    ### Get classifier score
+    test_classifier(pipeline, data_dict, predictors, False)
+
+
+# Select 5 best features
+selector = SelectKBest(score_func=f_classif, k=5)
 selector.fit(features, poi)
 is_best_features = selector.get_support()
 
@@ -220,7 +253,7 @@ for i in range (2):
 
     print ''
     print 'Gaussian Naive Bayes', pca_text
-    clf_fit_and_evaluate(clf_gnb, features, labels, pca_on, True, 5000)
+    test_classifier(clf_gnb, my_dataset, features_list, pca_on, folds=1000)
 
     # classifier 2: Decision Tree Classifier
     from sklearn import tree
@@ -228,15 +261,15 @@ for i in range (2):
 
     print ' '
     print 'Decision Tree Classifier', pca_text
-    clf_fit_and_evaluate(clf_dt, features, labels, pca_on, True, 5000)
+    test_classifier(clf_dt, my_dataset, features_list, pca_on, folds=1000)
 
     # classifier 3: Support Vector Machines
     from sklearn import svm
-    clf_svm = svm.SVC(kernel="rbf")
+    clf_svm = svm.SVC(kernel="linear")
 
     print ' '
     print 'Support Vector Machines', pca_text
-    clf_fit_and_evaluate(clf_svm, features, labels, pca_on, True, 5000)
+    test_classifier(clf_svm, my_dataset, features_list, pca_on, folds=1000)
 
     # classifier 4: Logistic Regression
     from sklearn.linear_model import LogisticRegression
@@ -244,7 +277,7 @@ for i in range (2):
 
     print ''
     print 'Logistic Regression', pca_text
-    clf_fit_and_evaluate(clf_lr, features, labels, pca_on, True, 5000)
+    test_classifier(clf_lr, my_dataset, features_list, pca_on, folds=1000)
 
     # classifier 5: KMeans
     from sklearn import cluster
@@ -252,7 +285,7 @@ for i in range (2):
 
     print ' '
     print 'KMeans', pca_text
-    clf_fit_and_evaluate(clf_km, features, labels, pca_on, True, 5000)
+    test_classifier(clf_km, my_dataset, features_list, pca_on, folds=1000)
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
@@ -264,18 +297,19 @@ for i in range (2):
 # Choose KMeans without PCA as classifier to tune
 
 from sklearn.grid_search import GridSearchCV
-parameters = {'n_clusters': [1,2] , 'algorithm':('auto', 'full', 'elkan')
-                , 'init':('k-means++', 'random'), 'n_init': [1,2,5,10,20]}
-from sklearn import cluster
-km = cluster.KMeans()
-clf = GridSearchCV(km, parameters)
+parameters = {'criterion': ('gini', 'entropy') , 'splitter':('best', 'random')
+                , 'min_samples_split': [2,3,4,5,6,7,8,9,10,11,12,13,14,15], 'min_samples_leaf': [1,2,3]
+                , 'max_features': [2,3,4,5]}
+
+dt = tree.DecisionTreeClassifier()
+clf = GridSearchCV(dt, parameters)
 clf.fit(features, labels)
 print 'best params: ', clf.best_params_
 print 'best estimator: ', clf.best_estimator_
 
 print ' '
-print 'Tuned k-nearest Neigbours'
-clf_fit_and_evaluate(clf, features, labels, False, True, 200)
+print 'Tuned decision tree without pca'
+test_classifier(clf, my_dataset, features_list, False, folds=1000)
 
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
@@ -285,6 +319,7 @@ clf_fit_and_evaluate(clf, features, labels, False, True, 200)
 
 # Winner: Gaussian Naive Bayes with PCA
 clf = GaussianNB()
-clf_fit_and_evaluate(clf, features, labels, True, False, 5000)
+pca_on=False
+test_classifier(clf_gnb, my_dataset, features_list, pca_on, folds=1000)
 
 dump_classifier_and_data(clf, my_dataset, features_list)
