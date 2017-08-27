@@ -152,9 +152,13 @@ features gave the best results. None of the new features were in this top 5:
     <td>deferred_income</td>
     <td>11.46</td>
   </tr>
-
 </table>
 
+The four new features that I created came in place 10, 11, 12 and 22. The features on place 10, 11 and 12 were all
+derived from the feature from_poi_to_this_person and all scored around the same. Using these features didn't lead 
+to a better accuracy, precision or recall when fitting with Gaussian Naive Bayes. Using the best performing new feature
+(from_po_perc) resulted in an f1 score of 0.3029. Using only the five best scoring features resulted in an f1 score of 
+0.38696.
 
 ## Picking an algorithm
 
@@ -414,7 +418,7 @@ decision tree, would result in better scores.
 ## Tuning an algorithm
 
 Parameter tuning in machine learning is the process of optimizing parameter settings for a learning algorithm.
-Tuning your algorithm allows you to get the best possible results. 
+Tuning your algorithm allows you to get the best possible results and can help avoid overfitting.
 
 I used GridSearchCV with the following parameters to tune DecisionTreeClassifier: 
 {'criterion': ('gini', 'entropy') , 'splitter':('best', 'random'), 'min_samples_split': [2,3,4,5,6,7,8,9,10,11,12,13,14,15],
