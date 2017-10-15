@@ -4,10 +4,6 @@
     <meta charset="utf-8">
     <style>
 
-    .bar {
-      fill: steelblue;
-    }
-
     .axis--x path {
       display: none;
     }
@@ -135,13 +131,19 @@
           .attr("text-anchor", "start")
           .text("Survival Rate in %");
 
-      /* draw the three bars disregarding the parch field */
+      /* draw the three bars disregarding the parch field
+         emphasize the male group by giving the bar another color */
 
       g.selectAll(".bar")
         .data(nested_data)
         .enter()
         .append("rect")
           .attr("class", "bar")
+          .attr("fill", function(d) { if(d.key === "male") {
+                                return "steelblue";
+                            } else {
+                                return "lightsteelblue";}
+                            })
           .attr("x", function(d) { return x(d.key); })
           .attr("y", function(d) { return y(d.value.Parch_all_Survival_Rate); })
           .attr("width", x.bandwidth())
