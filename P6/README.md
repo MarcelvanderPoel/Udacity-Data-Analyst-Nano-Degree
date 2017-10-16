@@ -7,22 +7,27 @@ women and children. As a basis I used the Titanic dataset I cleaned for my P2 pr
 
 ## Design 
 
-In my first design I planned to use a stacked bar to who the difference between for 
+In my first design (see jpg file) I planned to use a stacked bar to who the difference between for 
 all three groups (male, female, child) in survival rate. Bar charts are well suited to compare
-categorical data. Based on feedback I got i changed this to a simple bar chart.
+categorical data. 
 To better compare the three groups, I calculated the survival rate in percentages, instead of using
 the actual number of people who survived and died. Using the actual numbers would have made it difficult
-to compare the groups.
+to compare the groups. 
 I am adding a title "The survival rate on board of the Titanic".
 
 ## Feedback
 
-My plan to use a stacked bar chart was considered by my reviewers as unnecessary, since only two values
+The reviewers were my daughter (reviewer #1), my wife (reviewer #2) and a colleague (reviewer #3) and of
+course the reviewer from Udacity.
+My design to use a stacked bar chart was considered by my daughter (reviewer # 1) as unnecessary, since only two values
 are stacked. A simple bar chart gives a much cleaner and more focused chart. 
-At first I used grey to color the bars, a lot of people wanted some color, steelblue was best received.
+At first I used grey to color the bars, all my reviewers wanted some color, steelblue was best received.
 At that point I also decided to emphasize the male group by using lightsteelblue for the other two bars.
-Finally, the title was not enough for everybody to understand which message I was trying to present.
-So I changed it and added a lead text.
+My daughter and wife preferred to display a survival rate, where originally I planned to display a death rate.
+They felt it the low bar on males gave a much stronger message.
+The title was not enough for my colleague to understand which message I was trying to present.
+So I changed it and added a lead text. I also used red and green in the tooltip for easy recognition of the data
+after feedback from my colleague. 
 
 ## Resources
 
@@ -34,4 +39,6 @@ So I changed it and added a lead text.
 6) http://alignedleft.com/tutorials/d3/binding-data
 7) Stackoverflow
 8) Udacity course material
+9) https://github.com/VACLab/d3-tip
+10) http://bl.ocks.org/Caged/6476579
 
